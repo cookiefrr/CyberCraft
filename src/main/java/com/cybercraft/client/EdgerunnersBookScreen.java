@@ -71,20 +71,20 @@ public class EdgerunnersBookScreen extends Screen {
         for (Cyberware cyberware : Cyberware.values()) {
             add(ModItems.implant(cyberware), "Impianti");
         }
-        add(ModItems.NEURAL_LINK, "Strumenti");
-        add(ModItems.CYBERDECK, "Strumenti");
-        add(ModItems.EDGERUNNERS_BOOK, "Strumenti");
-        add(ModItems.MONOWIRE, "Strumenti");
-        add(ModItems.RAW_TITANIUM, "Materiali");
-        add(ModItems.TITANIUM_INGOT, "Materiali");
-        add(ModItems.RAW_NEODYMIUM, "Materiali");
-        add(ModItems.NEODYMIUM_INGOT, "Materiali");
-        add(ModItems.RAW_LITHIUM, "Materiali");
-        add(ModItems.LITHIUM_INGOT, "Materiali");
-        add(ModItems.CIRCUIT_BOARD, "Materiali");
-        add(ModItems.SERVO_MOTOR, "Materiali");
-        add(ModItems.BIO_GEL, "Materiali");
-        add(ModItems.OPTICS_LENS, "Materiali");
+        add(ModItems.NEURAL_LINK.get(), "Strumenti");
+        add(ModItems.CYBERDECK.get(), "Strumenti");
+        add(ModItems.EDGERUNNERS_BOOK.get(), "Strumenti");
+        add(ModItems.MONOWIRE.get(), "Strumenti");
+        add(ModItems.RAW_TITANIUM.get(), "Materiali");
+        add(ModItems.TITANIUM_INGOT.get(), "Materiali");
+        add(ModItems.RAW_NEODYMIUM.get(), "Materiali");
+        add(ModItems.NEODYMIUM_INGOT.get(), "Materiali");
+        add(ModItems.RAW_LITHIUM.get(), "Materiali");
+        add(ModItems.LITHIUM_INGOT.get(), "Materiali");
+        add(ModItems.CIRCUIT_BOARD.get(), "Materiali");
+        add(ModItems.SERVO_MOTOR.get(), "Materiali");
+        add(ModItems.BIO_GEL.get(), "Materiali");
+        add(ModItems.OPTICS_LENS.get(), "Materiali");
         for (Item item : BuiltInRegistries.ITEM) {
             if (item instanceof BlockItem && BuiltInRegistries.ITEM.getKey(item).getNamespace().equals("cybercraft")) {
                 add(item, "Blocchi");

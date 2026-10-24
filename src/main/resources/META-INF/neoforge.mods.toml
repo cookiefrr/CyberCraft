@@ -1,0 +1,21 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="All Rights Reserved"
+[[mods]]
+modId="cybercraft"
+version="${version}"
+displayName="CyberCraft"
+authors="Ian"
+description='''Cyberware, netrunning and neon technology for Minecraft.'''
+[[dependencies.cybercraft]]
+modId="neoforge"
+type="required"
+versionRange="[21.1.264,21.2)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.cybercraft]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.1]"
+ordering="NONE"
+side="BOTH"

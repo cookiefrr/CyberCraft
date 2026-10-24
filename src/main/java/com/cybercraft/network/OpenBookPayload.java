@@ -1,7 +1,7 @@
 package com.cybercraft.network;
 
 import com.cybercraft.CyberCraft;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -21,6 +21,6 @@ public record OpenBookPayload() implements CustomPacketPayload {
     }
 
     public static void send(ServerPlayer player) {
-        ServerPlayNetworking.send(player, new OpenBookPayload());
+        PacketDistributor.sendToPlayer(player, new OpenBookPayload());
     }
 }

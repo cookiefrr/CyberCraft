@@ -3,7 +3,7 @@ package com.cybercraft.network;
 import com.cybercraft.CyberCraft;
 import com.cybercraft.cyberware.CyberwareData;
 import java.util.List;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -52,7 +52,7 @@ public record CyberwareSyncPayload(
     }
 
     public static void send(ServerPlayer player, CyberwareData data) {
-        ServerPlayNetworking.send(player, new CyberwareSyncPayload(
+        PacketDistributor.sendToPlayer(player, new CyberwareSyncPayload(
                 data.implants(), data.tolerance(), data.ram(), data.overloaded(),
                 data.selectedHack(), data.sandevistanEnd(), data.sandevistanActiveUntil()));
     }

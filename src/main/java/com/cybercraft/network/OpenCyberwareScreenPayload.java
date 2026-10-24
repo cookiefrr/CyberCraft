@@ -1,7 +1,7 @@
 package com.cybercraft.network;
 
 import com.cybercraft.CyberCraft;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -22,6 +22,6 @@ public record OpenCyberwareScreenPayload() implements CustomPacketPayload {
     }
 
     public static void send(ServerPlayer player) {
-        ServerPlayNetworking.send(player, new OpenCyberwareScreenPayload());
+        PacketDistributor.sendToPlayer(player, new OpenCyberwareScreenPayload());
     }
 }

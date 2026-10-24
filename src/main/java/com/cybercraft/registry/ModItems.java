@@ -9,7 +9,8 @@ import com.cybercraft.netrunning.CyberdeckItem;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Function;
-import net.minecraft.core.Registry;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.DeferredItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -19,57 +20,58 @@ import net.minecraft.world.item.component.ItemAttributeModifiers;
 
 /** Registro di tutti gli item della mod. */
 public final class ModItems {
+    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(CyberCraft.MOD_ID);
 
     // --- Materiali grezzi e lavorati ---
-    public static final Item RAW_TITANIUM = simple("raw_titanium");
-    public static final Item TITANIUM_INGOT = simple("titanium_ingot");
-    public static final Item RAW_NEODYMIUM = simple("raw_neodymium");
-    public static final Item NEODYMIUM_INGOT = simple("neodymium_ingot");
-    public static final Item RAW_LITHIUM = simple("raw_lithium");
-    public static final Item LITHIUM_INGOT = simple("lithium_ingot");
+    public static final DeferredItem<Item> RAW_TITANIUM = simple("raw_titanium");
+    public static final DeferredItem<Item> TITANIUM_INGOT = simple("titanium_ingot");
+    public static final DeferredItem<Item> RAW_NEODYMIUM = simple("raw_neodymium");
+    public static final DeferredItem<Item> NEODYMIUM_INGOT = simple("neodymium_ingot");
+    public static final DeferredItem<Item> RAW_LITHIUM = simple("raw_lithium");
+    public static final DeferredItem<Item> LITHIUM_INGOT = simple("lithium_ingot");
 
     // --- Componenti tecnologici (niente legno: solo metallo, vetro, redstone) ---
-    public static final Item CIRCUIT_BOARD = simple("circuit_board");
-    public static final Item SERVO_MOTOR = simple("servo_motor");
-    public static final Item BIO_GEL = simple("bio_gel");
-    public static final Item OPTICS_LENS = simple("optics_lens");
+    public static final DeferredItem<Item> CIRCUIT_BOARD = simple("circuit_board");
+    public static final DeferredItem<Item> SERVO_MOTOR = simple("servo_motor");
+    public static final DeferredItem<Item> BIO_GEL = simple("bio_gel");
+    public static final DeferredItem<Item> OPTICS_LENS = simple("optics_lens");
 
     // --- Strumenti ---
-    public static final Item NEURAL_LINK = register("neural_link", NeuralLinkItem::new,
+    public static final DeferredItem<Item> NEURAL_LINK = register("neural_link", NeuralLinkItem::new,
             new Item.Properties().stacksTo(1));
-    public static final Item CYBERDECK = register("cyberdeck", CyberdeckItem::new,
+    public static final DeferredItem<Item> CYBERDECK = register("cyberdeck", CyberdeckItem::new,
             new Item.Properties().stacksTo(1));
-    public static final Item EDGERUNNERS_BOOK = register("edgerunners_book", EdgerunnersBookItem::new,
+    public static final DeferredItem<Item> EDGERUNNERS_BOOK = register("edgerunners_book", EdgerunnersBookItem::new,
             new Item.Properties().stacksTo(1));
 
     // --- Armi ---
-    public static final Item MONOWIRE = register("monowire", Item::new,
+    public static final DeferredItem<Item> MONOWIRE = register("monowire", Item::new,
             new Item.Properties().stacksTo(1).attributes(monowireAttributes()));
 
     // --- Impianti (uno per ogni voce del catalogo Cyberware) ---
-    public static final Map<Cyberware, Item> IMPLANTS = new EnumMap<>(Cyberware.class);
+    public static final Map<Cyberware, DeferredItem<Item>> IMPLANTS = new EnumMap<>(Cyberware.class);
 
     static {
         for (Cyberware cyberware : Cyberware.values()) {
-            Item item = register(cyberware.id(),
+            DeferredItem<Item> item = register(cyberware.id(),
                     properties -> new CyberwareImplantItem(properties, cyberware),
                     new Item.Properties().stacksTo(1));
             IMPLANTS.put(cyberware, item);
         }
     }
 
-    public static final Item MANTIS_BLADES = IMPLANTS.get(Cyberware.MANTIS_BLADES);
-    public static final Item SANDEVISTAN = IMPLANTS.get(Cyberware.SANDEVISTAN);
-    public static final Item CYBER_LEGS = IMPLANTS.get(Cyberware.CYBER_LEGS);
-    public static final Item REINFORCED_TENDONS = IMPLANTS.get(Cyberware.REINFORCED_TENDONS);
+    public static final DeferredItem<Item> MANTIS_BLADES = IMPLANTS.get(Cyberware.MANTIS_BLADES);
+    public static final DeferredItem<Item> SANDEVISTAN = IMPLANTS.get(Cyberware.SANDEVISTAN);
+    public static final DeferredItem<Item> CYBER_LEGS = IMPLANTS.get(Cyberware.CYBER_LEGS);
+    public static final DeferredItem<Item> REINFORCED_TENDONS = IMPLANTS.get(Cyberware.REINFORCED_TENDONS);
 
     private ModItems() {}
 
     public static Item implant(Cyberware cyberware) {
-        return IMPLANTS.get(cyberware);
+        return IMPLANTS.get(cyberware).get();
     }
 
-    private static Item simple(String name) {
+    private static DeferredItem<Item> simple(String name) {
         return register(name, Item::new, new Item.Properties());
     }
 
@@ -96,12 +98,9 @@ public final class ModItems {
     }
 
     /** Registra un item nel registro vanilla. */
-    private static <T extends Item> T register(String name, Function<Item.Properties, T> factory,
+    private static DeferredItem<Item> register(String name, Function<Item.Properties, ? extends Item> factory,
                                                Item.Properties properties) {
-        T item = factory.apply(properties);
-        return Registry.register(BuiltInRegistries.ITEM, CyberCraft.id(name), item);
+        return ITEMS.register(name, () -> factory.apply(properties));
     }
-
-    /** Chiamare dall'inizializzazione per forzare il caricamento della classe. */
-    public static void init() {}
+    public static void init(net.neoforged.bus.api.IEventBus bus) { ITEMS.register(bus); }
 }

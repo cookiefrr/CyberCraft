@@ -9,12 +9,14 @@ import com.cybercraft.network.OpenCyberwareScreenPayload;
 import com.cybercraft.network.SandevistanPayload;
 import com.cybercraft.network.SelectHackPayload;
 import com.mojang.blaze3d.platform.InputConstants;
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,7 +26,8 @@ import org.lwjgl.glfw.GLFW;
  * Entry point client: keybind rimappabili, cache dello stato cyberware,
  * schermate (impianti e manuale) e HUD dello scanner.
  */
-public final class CyberCraftClient implements ClientModInitializer {
+@EventBusSubscriber(modid="cybercraft", value=Dist.CLIENT, bus=EventBusSubscriber.Bus.MOD)
+public final class CyberCraftClient {
 
     /** Tasto predefinito: V. Il giocatore può cambiarlo dalle Opzioni > Comandi. */
     public static final KeyMapping SANDEVISTAN_KEY = key("key.cybercraft.sandevistan", GLFW.GLFW_KEY_V);
@@ -38,42 +41,22 @@ public final class CyberCraftClient implements ClientModInitializer {
         return new KeyMapping(translationKey, InputConstants.Type.KEYSYM, defaultKey, "category.cybercraft");
     }
 
-    @Override
-    public void onInitializeClient() {
-        KeyBindingHelper.registerKeyBinding(SANDEVISTAN_KEY);
-        KeyBindingHelper.registerKeyBinding(CYBERWARE_KEY);
-        KeyBindingHelper.registerKeyBinding(SCANNER_KEY);
-        KeyBindingHelper.registerKeyBinding(EXECUTE_HACK_KEY);
-        KeyBindingHelper.registerKeyBinding(HACK_PREV_KEY);
-        KeyBindingHelper.registerKeyBinding(HACK_NEXT_KEY);
-
-        ClientPlayNetworking.registerGlobalReceiver(CyberwareSyncPayload.TYPE, (payload, context) ->
-                context.client().execute(() -> ClientCyberwareState.set(payload.toData())));
-
-        ClientPlayNetworking.registerGlobalReceiver(OpenCyberwareScreenPayload.TYPE, (payload, context) ->
-                context.client().execute(() -> context.client().setScreen(new CyberwareScreen())));
-
-        ClientPlayNetworking.registerGlobalReceiver(OpenBookPayload.TYPE, (payload, context) ->
-                context.client().execute(() -> context.client().setScreen(new EdgerunnersBookScreen())));
-
-        ClientPlayNetworking.registerGlobalReceiver(HackResultPayload.TYPE, (payload, context) ->
-                context.client().execute(() -> {
-                    if (ScannerState.active) {
-                        ScannerState.finishUpload(payload.success(), payload.code());
-                    }
-                }));
-
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
-            EntityOutlineManager.reset();
-            ScannerState.close();
-        });
-
-        HudRenderCallback.EVENT.register(SandevistanFx::renderHud);
-        HudRenderCallback.EVENT.register(ScannerHud::render);
-
-        ClientTickEvents.END_CLIENT_TICK.register(CyberCraftClient::tick);
+    @SubscribeEvent
+    public static void keys(RegisterKeyMappingsEvent event) {
+        for (var key : new KeyMapping[] {SANDEVISTAN_KEY,CYBERWARE_KEY,SCANNER_KEY,EXECUTE_HACK_KEY,HACK_PREV_KEY,HACK_NEXT_KEY}) event.register(key);
     }
-
+    @SubscribeEvent
+    public static void layers(RegisterGuiLayersEvent event) {
+        event.registerAboveAll(com.cybercraft.CyberCraft.id("sandevistan"), SandevistanFx::renderHud);
+        event.registerAboveAll(com.cybercraft.CyberCraft.id("scanner"), ScannerHud::render);
+    }
+    @EventBusSubscriber(modid="cybercraft", value=Dist.CLIENT)
+    public static final class Events {
+        @SubscribeEvent public static void tick(ClientTickEvent.Post e) { CyberCraftClient.tick(Minecraft.getInstance()); }
+        @SubscribeEvent public static void logout(ClientPlayerNetworkEvent.LoggingOut e) {
+            EntityOutlineManager.reset(); ScannerState.close(); ClientCyberwareState.set(com.cybercraft.cyberware.CyberwareData.DEFAULT);
+        }
+    }
     private static void tick(Minecraft client) {
         if (client.player == null) {
             ScannerState.close();
@@ -91,11 +74,11 @@ public final class CyberCraftClient implements ClientModInitializer {
         }
 
         while (SANDEVISTAN_KEY.consumeClick()) {
-            ClientPlayNetworking.send(new SandevistanPayload());
+            PacketDistributor.sendToServer(new SandevistanPayload());
         }
         // Il client manda l'intenzione; il server verifica impianto e stato.
         if (client.options.keyJump.consumeClick() && !client.player.onGround()) {
-            ClientPlayNetworking.send(new DoubleJumpPayload());
+            PacketDistributor.sendToServer(new DoubleJumpPayload());
         }
 
         while (CYBERWARE_KEY.consumeClick()) {
@@ -115,18 +98,18 @@ public final class CyberCraftClient implements ClientModInitializer {
 
         while (HACK_PREV_KEY.consumeClick()) {
             ClientCyberwareState.cycleHack(-1);
-            ClientPlayNetworking.send(new SelectHackPayload(-1));
+            PacketDistributor.sendToServer(new SelectHackPayload(-1));
         }
         while (HACK_NEXT_KEY.consumeClick()) {
             ClientCyberwareState.cycleHack(1);
-            ClientPlayNetworking.send(new SelectHackPayload(1));
+            PacketDistributor.sendToServer(new SelectHackPayload(1));
         }
         while (EXECUTE_HACK_KEY.consumeClick()) {
             LivingEntity target = ScannerHud.currentTarget(client);
             if (target == null) {
                 continue;
             }
-            ClientPlayNetworking.send(new CastHackPayload(ClientCyberwareState.get().selectedHack(), target.getId()));
+            PacketDistributor.sendToServer(new CastHackPayload(ClientCyberwareState.get().selectedHack(), target.getId()));
             ScannerState.beginUpload();
         }
     }

@@ -22,6 +22,6 @@ public class ImplantForgeMenu extends CraftingMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        return stillValid(this.access, player, ModBlocks.IMPLANT_FORGE);
+        return stillValid(this.access, player, ModBlocks.IMPLANT_FORGE.get());
     }
 }

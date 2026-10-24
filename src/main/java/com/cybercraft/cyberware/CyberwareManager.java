@@ -53,11 +53,11 @@ public final class CyberwareManager {
     // ------------------------------------------------------------------
 
     public static CyberwareData get(ServerPlayer player) {
-        return player.getAttachedOrCreate(ModAttachments.CYBERWARE);
+        return player.getData(ModAttachments.CYBERWARE);
     }
 
     public static void set(ServerPlayer player, CyberwareData data) {
-        player.setAttached(ModAttachments.CYBERWARE, data);
+        player.setData(ModAttachments.CYBERWARE, data);
     }
 
     public static void sendSync(ServerPlayer player) {
@@ -298,10 +298,10 @@ public final class CyberwareManager {
         boolean sandevistanCooling = data.sandevistanEnd() > now;
         boolean berserk = data.has(Cyberware.BERSERK) && !data.has(Cyberware.SANDEVISTAN);
 
-        boolean holding = player.getMainHandItem().is(ModItems.NEURAL_LINK)
-                || player.getMainHandItem().is(ModItems.CYBERDECK)
-                || player.getOffhandItem().is(ModItems.NEURAL_LINK)
-                || player.getOffhandItem().is(ModItems.CYBERDECK);
+        boolean holding = player.getMainHandItem().is(ModItems.NEURAL_LINK.get())
+                || player.getMainHandItem().is(ModItems.CYBERDECK.get())
+                || player.getOffhandItem().is(ModItems.NEURAL_LINK.get())
+                || player.getOffhandItem().is(ModItems.CYBERDECK.get());
         if (!holding && !sandevistanActive && !sandevistanCooling) {
             return;
         }

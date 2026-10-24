@@ -8,7 +8,7 @@ import com.cybercraft.registry.ModItems;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -467,7 +467,7 @@ public class CyberwareScreen extends Screen {
             if (selectedSlot != null && data.inSlot(selectedSlot).isPresent()
                     && mouseX >= removeX && mouseX < removeX + removeW
                     && mouseY >= removeY && mouseY < removeY + removeH) {
-                ClientPlayNetworking.send(new RemoveImplantPayload(selectedSlot.ordinal()));
+                PacketDistributor.sendToServer(new RemoveImplantPayload(selectedSlot.ordinal()));
                 return true;
             }
 

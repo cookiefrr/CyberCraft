@@ -51,12 +51,12 @@ public final class NetrunnerManager {
 
     public static boolean hasCyberdeck(ServerPlayer player) {
         for (ItemStack stack : player.getInventory().items) {
-            if (stack.is(ModItems.CYBERDECK)) {
+            if (stack.is(ModItems.CYBERDECK.get())) {
                 return true;
             }
         }
         for (ItemStack stack : player.getInventory().offhand) {
-            if (stack.is(ModItems.CYBERDECK)) {
+            if (stack.is(ModItems.CYBERDECK.get())) {
                 return true;
             }
         }
