@@ -2,7 +2,7 @@
 
 Cyberpunk-inspired cyberware and netrunning for **Minecraft 1.21.1 / NeoForge**.
 
-**Version:** 0.3.0 · **Development:** `indev` · **Author:** Ian
+**Version:** 0.3.1 · **Development:** `indev` · **Author:** Ian
 
 ## Requirements
 
@@ -45,7 +45,7 @@ Neural Link opens cyberware, installs from the other hand, or activates the OS w
 ./gradlew build runGameTestServer
 ```
 
-Output: `build/libs/cybercraft-0.3.0.jar`. Windows users can use `gradlew.bat`.
+Output: `build/libs/cybercraft-0.3.1.jar`. Windows users can use `gradlew.bat`.
 Gradle resolves GeckoLib automatically; third-party jars do not belong in this repository.
 
 [Gameplay](docs/gameplay.md) · [Extend slots and implants](docs/extending.md) · [Development and tests](docs/development.md) · [Changes and fixes](docs/changelog.md)

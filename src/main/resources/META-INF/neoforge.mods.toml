@@ -5,7 +5,7 @@ license="All Rights Reserved"
 modId="cybercraft"
 version="${version}"
 displayName="CyberCraft"
-authors="Ian"
+authors="Ian, Xmilon"
 description='''Cyberware, netrunning and neon technology for Minecraft.'''
 [[dependencies.cybercraft]]
 modId="neoforge"
