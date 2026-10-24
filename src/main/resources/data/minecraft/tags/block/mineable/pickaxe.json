@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "cybercraft:neon_block",
+    "cybercraft:dark_metal_block",
+    "cybercraft:titanium_ore",
+    "cybercraft:deepslate_titanium_ore",
+    "cybercraft:neodymium_ore",
+    "cybercraft:deepslate_neodymium_ore",
+    "cybercraft:lithium_ore",
+    "cybercraft:deepslate_lithium_ore",
+    "cybercraft:raw_titanium_block",
+    "cybercraft:raw_neodymium_block",
+    "cybercraft:raw_lithium_block",
+    "cybercraft:titanium_block",
+    "cybercraft:neodymium_block",
+    "cybercraft:lithium_block",
+    "cybercraft:implant_forge",
+    "cybercraft:installation_table"
+  ]
+}

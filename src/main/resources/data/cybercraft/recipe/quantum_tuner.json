@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "C C",
+    " E ",
+    " F "
+  ],
+  "key": {
+    "C": {
+      "item": "cybercraft:circuit_board"
+    },
+    "E": {
+      "item": "cybercraft:neodymium_ingot"
+    },
+    "F": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "cybercraft:quantum_tuner"
+  }
+}

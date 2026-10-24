@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "cybercraft:block/implant_forge_top",
+    "bottom": "cybercraft:block/dark_metal_block",
+    "side": "cybercraft:block/implant_forge_side"
+  }
+}

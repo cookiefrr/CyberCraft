@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "cybercraft:block/dark_metal_block_top",
+    "side": "cybercraft:block/dark_metal_block"
+  }
+}

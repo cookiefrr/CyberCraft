@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "cybercraft:block/installation_table_top",
+    "bottom": "cybercraft:block/dark_metal_block",
+    "side": "cybercraft:block/installation_table_side"
+  }
+}

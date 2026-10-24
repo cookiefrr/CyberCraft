@@ -1,0 +1,29 @@
+# Gradle
+.gradle/
+build/
+out/
+
+# Ambiente di sviluppo locale
+run/
+logs/
+.tools/
+*.log
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.classpath
+.project
+bin/
+*.launch
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Registro di lavoro locale (la documentazione pubblica vive in docs/)
+/CyberCraft.md

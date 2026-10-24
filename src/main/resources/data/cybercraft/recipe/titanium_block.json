@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "III",
+    "III",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "item": "cybercraft:titanium_ingot"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "cybercraft:titanium_block"
+  }
+}
