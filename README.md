@@ -131,6 +131,7 @@ src/main/resources/
 - [docs/changelog.md](docs/changelog.md) — cronologia delle versioni
 - [docs/roadmap.md](docs/roadmap.md) — prossimi passi
 - [docs/dev-log.md](docs/dev-log.md) — registro degli interventi
+- [docs/quickhack-targeting.md](docs/quickhack-targeting.md) — targeting dal mirino, outline rosso e scheda statistiche
 
 ## Branch
 
