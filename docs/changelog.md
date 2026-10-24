@@ -8,6 +8,10 @@ Equipment now stores real component-bearing stacks in extensible data-pack slot 
 
 Kiroshi optics and an installed cyberdeck gate scanning/hacking. Remote Access toggles controls, including iron doors. Disruption suppresses redstone output for five seconds without restoring stale block states. Natural hostile humanoids gain capped cyberware loadouts as elapsed world age increases.
 
+### Mantis Blades extension
+
+Mantis Blades now use a dedicated 3D forearm housing and a long straight, serrated blade with a silver cutting edge and red cabling, rendered in first and third person. M (remappable) toggles the blades with a 300 ms slide-out or retract animation; they remain extended until pressed again. The toggle is server-authoritative and transient: it resets on implant removal, death, logout, or server stop, and is re-sent to players who start tracking the wearer. The +6 unarmed bonus and 3-tolerance cost apply only while the blades are extended and the implant is operational. Retracted blades keep the housing visible. Non-player wearers render the blades permanently extended, preserving their mob loadout behavior.
+
 ### Ten flaws addressed
 
 | Existing flaw | Correction and regression coverage |

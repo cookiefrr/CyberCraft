@@ -66,11 +66,18 @@ public final class CyberCraft {
     NeoForge.EVENT_BUS.addListener(
         (PlayerEvent.StartTracking e) -> {
           if (e.getEntity() instanceof ServerPlayer player
-              && e.getTarget() instanceof net.minecraft.world.entity.LivingEntity target)
+              && e.getTarget() instanceof net.minecraft.world.entity.LivingEntity target) {
             net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(
                 player,
                 new com.cybercraft.network.CyberwareSyncPayload(
                     target.getId(), CyberwareManager.get(target)));
+            if (target instanceof net.minecraft.world.entity.player.Player
+                && MantisBladeManager.extended(target))
+              net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(
+                  player,
+                  new com.cybercraft.network.MantisBladeStatePayload(
+                      target.getId(), true, false));
+          }
         });
     NeoForge.EVENT_BUS.addListener(CyberCraft::damage);
     NeoForge.EVENT_BUS.addListener(
@@ -87,11 +94,14 @@ public final class CyberCraft {
     NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerRespawnEvent e) -> sync(e));
     NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerChangedDimensionEvent e) -> sync(e));
     NeoForge.EVENT_BUS.addListener(
+        (PlayerEvent.PlayerLoggedOutEvent e) -> MantisBladeManager.reset(e.getEntity()));
+    NeoForge.EVENT_BUS.addListener(
         (ServerStoppedEvent e) -> {
           DoubleJumpHandler.clear();
           SandevistanManager.clear();
           ImplantEffects.clear();
           NetrunnerManager.clear();
+          MantisBladeManager.clear();
         });
     LOGGER.info("CyberCraft loaded. Welcome to Night City.");
   }
@@ -120,6 +130,7 @@ public final class CyberCraft {
       event.setCanceled(true);
       return;
     }
+    MantisBladeManager.reset(event.getEntity());
     if (event.getSource().getEntity() instanceof net.minecraft.world.entity.LivingEntity player)
       CyberwareManager.onKill(player, event.getEntity());
   }

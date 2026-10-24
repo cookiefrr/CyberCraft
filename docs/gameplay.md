@@ -4,7 +4,7 @@ Install implants through the CW inventory tab, by using the implant, or through 
 
 Capacity is `min(60, 20 + 2 × XP level)`, plus 20 with Chrome Compressor. Mobs are capped at 60. RAM and tolerance each cap at 100. RAM regenerates at 0.34/second with implant bonuses. Tolerance regenerates at 3/second; overload disables implants, pauses passive drain, and recovers at half speed until 25 tolerance.
 
-Kiroshi optics unlock the R scanner. A separately installed cyberdeck enables G quickhacks. X/Z cycle compatible hacks. Range follows render distance up to 64 blocks; walls and server protections apply. Sandevistan/Berserk use V, last ten seconds by default, and cool down for thirty seconds after the effect ends. Removing an OS ends its effect without resetting the cooldown.
+Kiroshi optics unlock the R scanner. A separately installed cyberdeck enables G quickhacks. X/Z cycle compatible hacks. Range follows render distance up to 64 blocks; walls and server protections apply. Sandevistan/Berserk use V, last ten seconds by default, and cool down for thirty seconds after the effect ends. Removing an OS ends its effect without resetting the cooldown. M toggles Mantis Blades: the blades slide out over 300 ms and stay extended until M is pressed again, then retract over 300 ms. The toggle requires operational Mantis Blades, is server-authoritative, and resets when the implant is removed, the player dies, or the player logs out.
 
 | Hack | Base RAM | Effect |
 |---|---:|---|
@@ -47,7 +47,7 @@ Implant item icons remain flat in inventory/hotbar views. Their physical attachm
 | Kiroshi Optics | ocular | 2 | 5 | Night vision and access to the scanner. Install a cyberdeck to hack targets. |
 | Lynx Paws | legs | 1 | 4 | +30% sneaking speed. |
 | Maneuvering System | nervous | 2 | 5 | +0.08 jump strength and -15% fall damage. |
-| Mantis Blades | arms | 2 | 8 | Unarmed strikes deal +6 damage. Each hit costs 3 tolerance. |
+| Mantis Blades | arms | 2 | 8 | M extends or retracts the blades; they stay out until toggled off. While extended, unarmed strikes deal +6 damage and cost 3 tolerance per hit. |
 | Microgenerator | hands | 2 | 6 | +1 attack damage. Melee hits have a 15% chance to add a 2.5-damage electrical burst. |
 | Newton Memory Boost | frontal cortex | 2 | 4 | RAM regenerates 0.08/s faster. Sandevistan cooldown reduced by 3 seconds. |
 | Optical Camo | integumentary | 3 | 7 | Grants invisibility while sneaking and standing still. +10% sneaking speed. |

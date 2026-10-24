@@ -23,4 +23,8 @@ public final class ClientPayloads {
   public static void result(HackResultPayload p) {
     if (ScannerState.active) ScannerState.finishUpload(p.success(), p.code());
   }
+
+  public static void mantis(MantisBladeStatePayload p) {
+    MantisBladeClientState.set(p.entityId(), p.extended(), p.animate());
+  }
 }

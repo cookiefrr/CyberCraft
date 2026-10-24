@@ -142,6 +142,43 @@ public final class CyberCraftTests {
   }
 
   @GameTest(template = "empty")
+  public static void mantisBladesOnlyHitWhenExtended(GameTestHelper h) {
+    var player =
+        FakePlayerFactory.get(h.getLevel(), new GameProfile(UUID.randomUUID(), "mantis_state"));
+    var victim = mob(h);
+    install(player, Cyberware.MANTIS_BLADES);
+    float tolerance = CyberwareManager.get(player).tolerance();
+    h.assertFalse(MantisBladeManager.active(player), "Mantis blades started extended");
+    h.assertTrue(
+        Math.abs(ImplantEffects.meleeBonus(player, victim)) < .001f, "Retracted blade hit");
+    h.assertTrue(
+        Math.abs(tolerance - CyberwareManager.get(player).tolerance()) < .001f,
+        "Retracted blade spent tolerance");
+    h.assertTrue(MantisBladeManager.toggle(player), "Toggle to extended was rejected");
+    h.assertTrue(MantisBladeManager.active(player), "Blades did not extend");
+    h.assertTrue(
+        Math.abs(6f - ImplantEffects.meleeBonus(player, victim)) < .001f,
+        "Extended blade missed");
+    h.assertTrue(MantisBladeManager.toggle(player), "Toggle to retracted was rejected");
+    h.assertFalse(MantisBladeManager.active(player), "Blades did not retract");
+    h.succeed();
+  }
+
+  @GameTest(template = "empty")
+  public static void mantisToggleRequiresImplantAndResetsOnRemoval(GameTestHelper h) {
+    var player =
+        FakePlayerFactory.get(h.getLevel(), new GameProfile(UUID.randomUUID(), "mantis_toggle"));
+    h.assertFalse(MantisBladeManager.toggle(player), "Toggle accepted without the implant");
+    install(player, Cyberware.MANTIS_BLADES);
+    h.assertTrue(MantisBladeManager.toggle(player), "Toggle rejected with the implant");
+    h.assertTrue(MantisBladeManager.active(player), "Blades did not extend");
+    CyberwareManager.equip(player, Cyberware.MANTIS_BLADES.slot().resource(), 0, ItemStack.EMPTY);
+    install(player, Cyberware.MANTIS_BLADES);
+    h.assertFalse(MantisBladeManager.active(player), "Reinstall restored a stale extended state");
+    h.succeed();
+  }
+
+  @GameTest(template = "empty")
   public static void retaliationDoesNotRecurse(GameTestHelper h) {
     var a = mob(h);
     var b = mob(h);

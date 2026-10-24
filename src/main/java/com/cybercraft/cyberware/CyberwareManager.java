@@ -156,6 +156,7 @@ public final class CyberwareManager {
               slot, index, def.getKey().location(), def.getValue().behavior(), stack));
     }
     set(entity, data.withEquipment(list, data.recovery()));
+    if (!get(entity).has(Cyberware.MANTIS_BLADES)) MantisBladeManager.reset(entity);
     previous.ifPresent(e -> ImplantBehaviors.changed(entity, e, false));
     at(get(entity), slot, index).ifPresent(e -> ImplantBehaviors.changed(entity, e, true));
     if (previous.isPresent()
@@ -210,7 +211,9 @@ public final class CyberwareManager {
                 entry.slot(), entry.index(), entry.definition(), def.behavior(), entry.stack()));
       else recovery.add(entry.stack().copy());
     }
-    set(entity, data.withEquipment(keep, recovery));
+    var next = data.withEquipment(keep, recovery);
+    set(entity, next);
+    if (!next.has(Cyberware.MANTIS_BLADES)) MantisBladeManager.reset(entity);
   }
 
   public static void tick(LivingEntity entity) {

@@ -2,6 +2,7 @@ package com.cybercraft.client;
 
 import com.cybercraft.network.CastHackPayload;
 import com.cybercraft.network.DoubleJumpPayload;
+import com.cybercraft.network.MantisBladePayload;
 import com.cybercraft.network.OpenCyberwarePayload;
 import com.cybercraft.network.SandevistanPayload;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -28,6 +29,8 @@ public final class CyberCraftClient {
       key("key.cybercraft.execute_hack", GLFW.GLFW_KEY_G);
   public static final KeyMapping HACK_PREV_KEY = key("key.cybercraft.hack_prev", GLFW.GLFW_KEY_X);
   public static final KeyMapping HACK_NEXT_KEY = key("key.cybercraft.hack_next", GLFW.GLFW_KEY_Z);
+  public static final KeyMapping MANTIS_BLADES_KEY =
+      key("key.cybercraft.mantis_blades", GLFW.GLFW_KEY_M);
 
   private static KeyMapping key(String translationKey, int defaultKey) {
     return new KeyMapping(
@@ -43,7 +46,8 @@ public final class CyberCraftClient {
           SCANNER_KEY,
           EXECUTE_HACK_KEY,
           HACK_PREV_KEY,
-          HACK_NEXT_KEY
+          HACK_NEXT_KEY,
+          MANTIS_BLADES_KEY
         }) event.register(key);
   }
 
@@ -69,6 +73,7 @@ public final class CyberCraftClient {
     public static void logout(ClientPlayerNetworkEvent.LoggingOut e) {
       EntityOutlineManager.reset();
       ScannerState.close();
+      MantisBladeClientState.clear();
       ClientCyberwareState.set(com.cybercraft.cyberware.CyberwareData.DEFAULT);
     }
   }
@@ -112,6 +117,13 @@ public final class CyberCraftClient {
             true);
     }
 
+    while (MANTIS_BLADES_KEY.consumeClick()) {
+      if (com.cybercraft.cyberware.CyberwareManager.operational(client.player)
+          && ClientCyberwareState.get()
+              .has(com.cybercraft.cyberware.Cyberware.MANTIS_BLADES))
+        PacketDistributor.sendToServer(new MantisBladePayload());
+    }
+
     if (!ScannerState.active) {
       while (EXECUTE_HACK_KEY.consumeClick()) {}
       while (HACK_PREV_KEY.consumeClick()) {}
@@ -139,5 +151,6 @@ public final class CyberCraftClient {
     while (EXECUTE_HACK_KEY.consumeClick()) {}
     while (HACK_PREV_KEY.consumeClick()) {}
     while (HACK_NEXT_KEY.consumeClick()) {}
+    while (MANTIS_BLADES_KEY.consumeClick()) {}
   }
 }

@@ -111,7 +111,7 @@ public final class EnglishLanguage extends LanguageProvider {
     add("book.cybercraft.desc.maneuvering_system", "+0.08 jump strength and -15% fall damage.");
     add(
         "book.cybercraft.desc.mantis_blades",
-        "Unarmed strikes deal +6 damage. Each hit costs 3 tolerance.");
+        "Toggle extending blades with the Mantis Blades key. Extended: unarmed strikes deal +6 damage for 3 tolerance per hit. Blades stay out until toggled off.");
     add(
         "book.cybercraft.desc.microgenerator",
         "+1 attack damage. Melee hits have a 15% chance to add a 2.5-damage electrical burst.");
@@ -333,6 +333,7 @@ public final class EnglishLanguage extends LanguageProvider {
     add("key.cybercraft.execute_hack", "Execute Quickhack");
     add("key.cybercraft.hack_next", "Next Quickhack");
     add("key.cybercraft.hack_prev", "Previous Quickhack");
+    add("key.cybercraft.mantis_blades", "Toggle Mantis Blades");
     add("key.cybercraft.sandevistan", "Activate Sandevistan");
     add("key.cybercraft.scanner", "Toggle Scanner");
     add("msg.cybercraft.adrenaline", "ADRENALINE SURGE");
