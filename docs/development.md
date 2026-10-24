@@ -1,96 +1,41 @@
-# Sviluppo
+# Development and testing
 
-## Ambiente
+The project uses Java 21, Fabric Loader 0.20.1, Fabric API 0.116.17+1.21.1, Loom 1.17.21, Gradle 9.5.0, and GeckoLib 4.9.3. Versions are pinned in the build and properties files. The local GeckoLib jar in `src/mods` takes precedence over the official Maven dependency; exactly one copy is used. CI verifies the Maven fallback. GeckoLib remains a separate player installation dependency.
 
-- **JDK 21** (obbligatorio).
-- Gradle Wrapper 8.10.2 incluso: non serve un'installazione globale.
-- Il progetto usa Loom 1.7.4 e mapping Mojang ufficiali.
-- Le versioni di Minecraft, loader, API e mod sono in `gradle.properties`.
+## Reproducible resources
 
-## Build
+`./gradlew runData` runs the recipe, gameplay, asset, and English language providers. Their output is tracked in `src/generated/resources`; edit providers instead of generated JSON. Run generation again and inspect the diff before committing. Textures remain authored resources under `src/main/resources`.
 
-```bash
-./gradlew build
+A GUI-context rendering hook uses GeckoLib integration to draw the original flat icon. Held/dropped and equipped views use the native 3D geometry. GeckoLib does not drive combat or body animations.
+
+## Automated checks
+
+```sh
+./gradlew runData
+./gradlew test
+./gradlew runGameTestServer
+./gradlew clean build
 ```
 
-In assenza di rete:
+- `src/test`: progression boundaries and resource completeness checks.
+- `src/gametest`: independent test mod, fixtures, synthetic players, inventories, mobs, and circuitry.
+- `run-gametest`: disposable server world and logs; never uses a player save.
+- `build/reports/tests/test`: unit-test report.
 
-```bash
-./gradlew build --offline
-```
+The test mod is loaded only by the GameTest and client smoke runs and is excluded from the published jar. Tests cover installed access requirements, inventory/full-inventory transactions, named components, death copying, saved cooldowns, damage bonuses, retaliation, effect ownership, added/missing definitions, protected targets, block access, redstone output/propagation/expiry, disk persistence, and unloaded-chunk expiry.
 
-Output: `build/libs/cybercraft-<versione>.jar` e relativo sources jar.
+GameTests run on a real Fabric server with GeckoLib installed. GeckoLib development refmap warnings do not indicate a mod failure.
 
-La versione si cambia in `gradle.properties` (`mod_version`); `fabric.mod.json` espande `${version}` durante `processResources`.
+## Automated client loading
 
-## Test server
+`./gradlew runClientSmoke` uses `run-client-test`, loads the real client, checks all 43 native models, flat icons and GUI renderer entries, renders every inventory icon, and exits automatically. It does not inspect visual placement.
 
-```bash
-./gradlew runServer
-```
+## Manual client review
 
-Per un test rapido non interattivo:
+`./gradlew runClient` starts the development client. Use a fresh world. Verify the CW tab in survival and creative, Back navigation and selected creative category, GUI scales, Shift tooltips, ordinary clicks/dragging, scanner targets, and first-/third-person implant placement. Check armor and both player arm widths. The user performs visual acceptance; automated checks do not establish visual quality.
 
-```bash
-timeout -k 10 ./gradlew runServer --offline
-```
+`./gradlew runServer` starts a normal dedicated server. Keep world saves, server configuration, logs, third-party mods, IDE metadata, and local tools out of commits.
 
-Il codice di uscita `124` è atteso quando il timeout interrompe il server: controllare nel log la presenza di `Done`, del messaggio di caricamento della mod e l'assenza di eccezioni. I log finiscono in `run/`.
+## Branches
 
-Checklist minima dopo una modifica:
-
-1. `gradlew build --offline` termina con `BUILD SUCCESSFUL`.
-2. Il server carica la versione corretta e arriva a `Done`.
-3. Nessun errore di datapack, ricette, worldgen o registrazione.
-4. JSON e lang restano validi e con parità EN/IT.
-5. Il jar contiene le classi e gli asset nuovi.
-
-## Verifica asset
-
-- Ogni file JSON in `src/main/resources` deve essere parsabile.
-- `en_us.json` e `it_it.json` devono avere lo stesso set di chiavi.
-- Ogni item deve avere modello e texture; ogni blocco blockstate, modello, loot table e tag.
-- Le texture restano PNG 16×16 segnaposto finché non vengono sostituite.
-
-## Installazione in un'istanza
-
-1. Chiudere Minecraft e il launcher: su Windows un jar in uso è bloccato (`Device or resource busy`).
-2. Eliminare la versione precedente dalla cartella `mods`.
-3. Copiare il nuovo jar.
-4. Verificare che ci sia una sola versione di CyberCraft.
-5. Avviare con Fabric Loader e Fabric API corretti.
-
-## Branch
-
-| Branch | Uso |
-|---|---|
-| `main` | Versioni stabili e rilasciate; nessun lavoro in corso. |
-| `indev` | Sviluppo attivo; build e test possono essere incompleti. |
-
-Flusso consigliato:
-
-```bash
-git switch indev
-# sviluppo e commit
-./gradlew build --offline
-# test server
-git switch main
-git merge --no-ff indev
-git push origin main indev
-```
-
-Le modifiche che richiedono più passaggi restano su `indev` finché build e test server non sono puliti.
-
-## Rilascio
-
-1. Aggiornare `mod_version` (es. `0.2.2`).
-2. Aggiornare `docs/changelog.md`, `docs/roadmap.md` e `README.md`.
-3. Build e test server.
-4. Commit su `indev`, merge in `main`, push di entrambi i branch.
-5. Allegare il jar alla release GitHub.
-
-## Problemi noti dell'ambiente
-
-- L'avvio client in ambiente di sviluppo può richiedere `downloadAssets` o partire con asset vanilla incompleti: è un limite dell'ambiente, non della mod.
-- Il test gameplay lato client (apertura schermate, HUD, effetti) va eseguito manualmente in un mondo.
-- Su Windows, Modrinth App o `javaw.exe` possono bloccare i jar nella cartella `mods` finché il gioco è aperto.
+Publish NeoForge development commits to `neoforge/1.21.1-indev` and Fabric development commits to `fabric/1.21.1-indev`. Their corresponding stable branches are `neoforge/1.21.1` and `fabric/1.21.1`. Promote gameplay changes only after the user's visual acceptance. The original `main` and `indev` branches remain historical baselines. Do not force-push or publish unverified changes.

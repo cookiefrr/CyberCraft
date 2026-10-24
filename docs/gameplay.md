@@ -1,152 +1,67 @@
-# Gameplay e contenuti
+# Gameplay
 
-Riferimento ai contenuti della versione `0.2.2` per Minecraft 1.21.1 / Fabric.
+Install implants through the CW inventory tab, by using the implant, or through the Installation Table. Neural Link installs a compatible item held in the other hand. Standard clicks and shift-click move stacks between equipment and inventory. Equipment survives death; XP-derived capacity can still decrease after death. When equipment exceeds capacity, its effects suspend until the loadout fits again.
 
-## Slot corporei
+Capacity is `min(60, 20 + 2 × XP level)`, plus 20 with Chrome Compressor. Mobs are capped at 60. RAM and tolerance each cap at 100. RAM regenerates at 0.34/second with implant bonuses. Tolerance regenerates at 3/second; overload disables implants, pauses passive drain, and recovers at half speed until 25 tolerance.
 
-Un solo impianto per slot:
+Kiroshi optics unlock the R scanner. A separately installed cyberdeck enables G quickhacks. X/Z cycle compatible hacks. Range follows render distance up to 64 blocks; walls and server protections apply. Sandevistan/Berserk use V, last ten seconds by default, and cool down for thirty seconds after the effect ends. Removing an OS ends its effect without resetting the cooldown. M toggles Mantis Blades: the blades slide out over 300 ms and stay extended until M is pressed again, then retract over 300 ms. The toggle requires operational Mantis Blades, is server-authoritative, and resets when the implant is removed, the player dies, or the player logs out.
 
-| Slot | ID |
-|---|---|
-| Sistema operativo | `operating_system` |
-| Corteccia frontale | `frontal_cortex` |
-| Oculare | `ocular` |
-| Mani | `hands` |
-| Braccia | `arms` |
-| Sistema nervoso | `nervous_system` |
-| Circolatorio | `circulatory` |
-| Integumentario | `integumentary` |
-| Scheletro | `skeleton` |
-| Gambe | `legs` |
-
-## Capacità e tolleranza
-
-- **Capacità** = `min(60, 20 + 2 × livello XP)`, più 20 con il Compressore Cromato.
-- Ogni impianto occupa capacità; se il totale supera il massimo l'installazione viene rifiutata.
-- Se il livello XP scende, gli impianti restano installati: si blocca solo l'installazione di nuovi.
-- **Tolleranza**: massimo 100, rigenera circa 3 al secondo. A zero scatta il sovraccarico (Nausea, danno periodico, impianti spenti, rigenerazione dimezzata); se ne esce a 25.
-- **RAM**: massimo 100 per tutti. L'Ex-Disk aumenta solo la rigenerazione.
-
-## Impianti (42)
-
-| Impianto | ID | Slot | Attivazione | Tolleranza | Capacità | Tier | Effetto |
-|---|---|---|---|---|---|---|---|
-| Berserk | `berserk` | Sistema operativo | Attivo | 30 all'uso | 14 | 3 | Forza II, Resistenza II e Velocità I per 10 s. |
-| Compressore Cromato | `chrome_compressor` | Sistema operativo | Passivo | — | 10 | 3 | +20 capacità cyberware. |
-| Sandevistan | `sandevistan` | Sistema operativo | Attivo | 35 all'uso | 12 | 3 | Velocità III e Rapidità II per 10 s; mob entro 15 blocchi rallentati dell'85%. Ricarica 30 s. |
-| Axolotl | `axolotl` | Corteccia frontale | Passivo | — | 5 | 2 | +2 cuori massimi; Sandevistan 2 s più lungo. |
-| Ottimizzatore COX-2 | `cox2_optimizer` | Corteccia frontale | Passivo | — | 5 | 2 | Cortocircuito +25% danni; RAM +0,04/s. |
-| Aggiornamento RAM Ex-Disk | `ex_disk_ram_upgrade` | Corteccia frontale | Passivo | — | 6 | 3 | RAM +0,10/s. Il massimo resta 100. |
-| Potenziamento Memoria Newton | `newton_memory_boost` | Corteccia frontale | Passivo | — | 4 | 2 | RAM +0,08/s; ricarica Sandevistan −3 s. |
-| Sintonizzatore Quantico | `quantum_tuner` | Corteccia frontale | Passivo | — | 6 | 3 | Ricarica Sandevistan −6 s. |
-| Self-ICE | `self_ice` | Corteccia frontale | Passivo | — | 4 | 2 | +2 armatura. |
-| Impronta Comportamentale | `behavioral_imprint` | Oculare | Passivo | — | 4 | 2 | Quickhack −10% RAM; +1 Fortuna. |
-| Ottiche Kiroshi | `kiroshi_optics` | Oculare | Passivo | — | 5 | 2 | Visione notturna permanente. |
-| Coprocessore Balistico | `ballistic_coprocessor` | Mani | Passivo | — | 5 | 2 | +1,5 danno e +0,5 velocità d'attacco. |
-| Impugnatura Rinforzata | `handle_wrap` | Mani | Passivo | — | 3 | 1 | +0,5 velocità d'attacco. |
-| Microgeneratore | `microgenerator` | Mani | Passivo | — | 6 | 2 | +1 danno; 15% di probabilità di +2,5 danni da fulmine a mani nude. |
-| Collegamento Smart | `smart_link` | Mani | Passivo | — | 5 | 2 | +2 danno d'attacco. |
-| Braccia di Gorilla | `gorilla_arms` | Braccia | Passivo | — | 8 | 2 | +3 danni a mani nude (2 Tolleranza) e +20% resistenza al contraccolpo. |
-| Lame da Mantide | `mantis_blades` | Braccia | Al colpo | 3 all'uso | 8 | 2 | +6 danni a mani nude; ogni colpo costa 3 Tolleranza. |
-| Sistema di Lancio Proiettili | `projectile_launch_system` | Braccia | Al colpo | 20 all'uso | 10 | 3 | Esplosione sui colpi a mani nude ogni 5 s; costa 20 Tolleranza. |
-| Convertitore di Adrenalina | `adrenaline_converter` | Sistema nervoso | Passivo | — | 5 | 2 | Sotto il 30% di vita: Velocità II, Forza II e Resistenza I per 6 s. Ricarica 60 s. |
-| Kerenzikov | `kerenzikov` | Sistema nervoso | Passivo | — | 6 | 2 | +2% velocità di movimento. |
-| Sistema di Manovra | `maneuvering_system` | Sistema nervoso | Passivo | — | 5 | 2 | +0,08 salto; −15% danni da caduta. |
-| Acceleratore Sinaptico Riflessi | `reflex_synaptic_accelerator` | Sistema nervoso | Passivo | — | 7 | 3 | +2% velocità e +1 velocità d'attacco. |
-| Biomonitor | `biomonitor` | Circolatorio | Passivo | — | 6 | 2 | Sotto il 25% di vita: cura 6 e Assorbimento II. Ricarica 60 s. |
-| Pompa Ematica | `blood_pump` | Circolatorio | Passivo | — | 5 | 2 | +1 cuore massimo; cura 1 per uccisione. |
-| Guarigione su Uccisione | `heal_on_kill` | Circolatorio | Passivo | — | 5 | 2 | Cura 4 per uccisione. |
-| Secondo Cuore | `second_heart` | Circolatorio | Passivo | — | 10 | 3 | Annulla un colpo letale ogni 60 s, curando al 30% con rigenerazione e assorbimento. |
-| Polmone Sintetico Bioplastico | `syn_lungs_bioplastic` | Circolatorio | Passivo | — | 4 | 2 | Respirazione acquatica; +50% movimento in acqua. |
-| Messa a Terra Ignifuga | `fireproof_grounding` | Integumentario | Passivo | — | 5 | 2 | Resistenza al fuoco permanente. |
-| Mimetica Ottica | `optical_camo` | Integumentario | Passivo | — | 7 | 3 | Invisibilità accovacciati e fermi; +10% velocità furtiva. |
-| Editor del Dolore | `pain_editor` | Integumentario | Passivo | — | 6 | 2 | +2 armatura e +2 robustezza. |
-| Shock 'n Awe | `shock_n_awe` | Integumentario | Passivo | — | 6 | 2 | Chi attacca in mischia entro 4 blocchi subisce 2,5 danni da fulmine. |
-| Corazza Sottocutanea | `subdermal_armor` | Integumentario | Passivo | — | 7 | 2 | +4 armatura. |
-| Articolazioni Bioniche | `bionic_joints` | Scheletro | Passivo | — | 6 | 2 | +3% velocità di movimento. |
-| Midollo Denso | `dense_marrow` | Scheletro | Passivo | — | 6 | 2 | +2 cuori massimi. |
-| Scheletro Epimorfico | `epimorphic_skeleton` | Scheletro | Passivo | — | 8 | 3 | +3 cuori massimi; rigenerazione sotto metà vita. |
-| Articolazioni a Molla | `spring_joints` | Scheletro | Passivo | — | 5 | 1 | +0,15 salto; −30% danni da caduta. |
-| Ossa di Titanio | `titanium_bones` | Scheletro | Passivo | — | 6 | 2 | +4 robustezza. |
-| Gambe Cibernetiche | `cyber_legs` | Gambe | Passivo | — | 6 | 1 | Salto Potenziato III; consuma 1 Tolleranza al secondo. |
-| Caviglie Rinforzate | `fortified_ankles` | Gambe | Passivo | — | 6 | 2 | −50% danni da caduta. |
-| Tendini di Jenkins | `jenkins_tendons` | Gambe | Passivo | — | 5 | 2 | +5% velocità di movimento. |
-| Zampe di Lince | `lynx_paws` | Gambe | Passivo | — | 4 | 1 | +30% velocità furtiva. |
-| Tendini Rinforzati | `reinforced_tendons` | Gambe | Al salto | — | 6 | 2 | Doppio salto. |
-
-## Quickhack
-
-| Quickhack | RAM | Effetto |
+| Hack | Base RAM | Effect |
 |---|---:|---|
-| Cortocircuito | 4 | 6 danni elettrici e fuoco per 4 s; fulmine solo grafico. |
-| Riavvio Ottico | 3 | Cecità per 10 s; il mob perde il bersaglio. |
-| Contagio | 5 | Veleno II e Debolezza per 10 s. |
+| Short Circuit | 4 | Hacker-attributed electrical damage and fire |
+| Optic Reboot | 3 | Blindness and immediate loss of the mob's target |
+| Contagion | 5 | Poison and weakness |
+| Remote Access | 3 | Toggle doors, trapdoors, fence gates, or levers |
+| Disruption | 5 | Silence a vanilla redstone source for five seconds |
 
-Lancio con tasto destro mirando qualsiasi entità vivente in linea di vista, entro `min(render distance × 16, 64)` blocchi; il server valida fino a 64. Maiusc + tasto destro cambia hack; la selezione si scorre solo con Z/X, la rotella resta alla hotbar.
+Mob enhancement starts on day 5 at a 5% chance. Chance rises linearly to 35% on day 50 and then stops. Maximum loadout/tier is one on day 5, two on day 15, and three on day 30. Age uses elapsed game ticks, not the sun clock. Only eligible naturally spawned hostile humanoids are rolled, once; no automatic implant drops or mob block hacks are added.
 
-### Scanner e scheda bersaglio
+Implant item icons remain flat in inventory/hotbar views. Their physical attachments remain 3D. Hold Shift over an item for technical details. The Edgerunner's Book reads crafting recipes from the active recipe manager.
 
-- Con lo scanner attivo le entità viventi visibili nel campo visivo ricevono un outline rosso; il limite è 48 entità per aggiornamento, a 4 Hz.
-- La scheda statistiche compare solo quando il mirino è sopra un bersaglio evidenziato: nome, tipo, fazione, salute, armatura/robustezza, effetti attivi e barra di upload.
-- Quando il mirino lascia il bersaglio la scheda sfuma in 120 ms.
-- Bersagli validi: mob, animali, villager, giocatori e armor stand; esclusi sé stessi, morti e spettatori.
+## Implant catalog
 
-## Materiali e componenti
-
-| Contenuto | ID | Uso |
-|---|---|---|
-| Titanio grezzo / lingotto | `raw_titanium` / `titanium_ingot` | Tier 2, scheletri e arti. |
-| Neodimio grezzo / lingotto | `raw_neodymium` / `neodymium_ingot` | Tier 3 e impianti avanzati. |
-| Litio grezzo / lingotto | `raw_lithium` / `lithium_ingot` | Gel biologico e componenti. |
-| Scheda Circuito | `circuit_board` | Componente base di impianti e banchi. |
-| Servomotore | `servo_motor` | Braccia, gambe e articolazioni. |
-| Gel Biologico | `bio_gel` | Impianti circolatori. |
-| Lente Ottica | `optics_lens` | Impianti oculari e puntamento. |
-
-Fusione e blasting per ogni lingotto (200 / 100 tick, 0,7 XP). I blocchi di stoccaggio si craftano 3×3 con 9 unità e si scompattano in 9.
-
-## Worldgen
-
-| Minerale | Altezza | Filoni per chunk | Dimensione vena |
-|---|---|---:|---:|
-| Titanio | Y −64…32 | 10 | 6 |
-| Neodimio | Y −64…16 | 7 | 5 |
-| Litio | Y −32…64 | 12 | 7 |
-
-Ogni filone sostituisce pietra e ardesia profonda.
-
-## Ricette
-
-- **Tier 1**: nucleo ferro, secondario rame, struttura ferro.
-- **Tier 2**: nucleo titanio, secondario oro, struttura titanio.
-- **Tier 3**: nucleo neodimio, secondario diamante, struttura titanio, materiale pesante neodimio.
-- Comuni: scheda circuito, servomotore, gel biologico, lente ottica, vetro, redstone.
-- **Nessuna ricetta impianto usa legno.**
-
-Totale: 70 ricette (42 impianti, 4 strumenti, 4 componenti, 2 banchi, 6 blocchi, 12 fusione/scompattamento).
-
-## Strumenti e banchi
-
-| Contenuto | ID | Uso |
-|---|---|---|
-| Neural Link | `neural_link` | Tasto destro: installa l'impianto nell'altra mano; a mani vuote apre la schermata Cyberware. Mostra TOL/RAM/CAP. |
-| Cyberdeck | `cyberdeck` | Lancia il quickhack selezionato. |
-| Edgerunner's Book | `edgerunners_book` | Manuale con descrizione, icona e ricetta di ogni contenuto. |
-| Monocorda | `monowire` | 7 danni, colpi lenti, 2 blocchi di portata extra. |
-| Banco Impianti | `implant_forge` | Griglia 3×3 per craftare gli impianti. |
-| Tavolo di Installazione | `installation_table` | Installa l'impianto tenuto in mano o apre la schermata Cyberware. |
-
-## Comandi
-
-| Azione | Tasto |
-|---|---|
-| Sandevistan / Berserk | `V` |
-| Schermata Cyberware | `C` |
-| Scanner | `R` |
-| Esegui quickhack | `G` |
-| Quickhack precedente / successivo | `X` / `Z` |
-| Naviga quickhack | Rotella |
-| Installa impianto / apri Cyberware | Tasto destro con Neural Link |
-| Cambia quickhack | Maiusc + tasto destro con Cyberdeck |
-
-Le keybind sono rimappabili in **Opzioni → Comandi → CyberCraft**.
+| Implant | Slot | Tier | Capacity | Effect |
+|---|---|---:|---:|---|
+| Adrenaline Converter | nervous | 2 | 5 | Below 30% health: Speed II, Strength II and Resistance I for 6 s. 60 s cooldown. |
+| Axolotl | frontal cortex | 2 | 5 | +2 max health. Sandevistan lasts 2 seconds longer. |
+| Ballistic Coprocessor | hands | 2 | 5 | +1.5 attack damage and +0.5 attack speed. |
+| Behavioral Imprint | ocular | 2 | 4 | Quickhacks cost 10% less RAM. +1 Luck. |
+| Berserk | operating system | 3 | 14 | Activates Berserk: Strength II, Resistance II and Speed I. 30 tolerance. |
+| Biomonitor | circulatory | 2 | 6 | Below 25% health: heals 3 hearts and grants Absorption II. 60 s cooldown. |
+| Bionic Joints | skeleton | 2 | 6 | +3% movement speed. |
+| Blood Pump | circulatory | 2 | 5 | +2 max health. Heals 0.5 hearts per kill. |
+| Chrome Compressor | operating system | 3 | 10 | Increases cyberware capacity by 20, allowing more implants at once. |
+| COX-2 Optimizer | frontal cortex | 2 | 5 | Short Circuit deals +25% damage. RAM regenerates 0.04/s faster. |
+| Cybernetics Legs | legs | 1 | 6 | Passive Jump Boost III. Drains 1 tolerance per second. |
+| Cyberdeck | cyberdeck | 2 | 6 | Install in the dedicated cyberdeck slot to enable quickhacks. Requires Kiroshi optics. |
+| Dense Marrow | skeleton | 2 | 6 | +4 max health. |
+| Epimorphic Skeleton | skeleton | 3 | 8 | +6 max health. Regeneration while below half health. |
+| Ex-Disk RAM Upgrade | frontal cortex | 3 | 6 | +0.10 RAM regeneration per second. Maximum RAM is 100. |
+| Fireproof Grounding | integumentary | 2 | 5 | Permanent fire resistance. |
+| Fortified Ankles | legs | 2 | 6 | -50% fall damage. |
+| Gorilla Arms | arms | 2 | 8 | +3 attack damage and +20% knockback resistance. Unarmed hits add another +3 damage for 2 tolerance. |
+| Handle Wrap | hands | 1 | 3 | +0.5 attack speed. |
+| Heal-On-Kill | circulatory | 2 | 5 | Heals 2 hearts on every kill. |
+| Jenkins' Tendons | legs | 2 | 5 | +5% movement speed. |
+| Kerenzikov | nervous | 2 | 6 | +2% movement speed. |
+| Kiroshi Optics | ocular | 2 | 5 | Night vision and access to the scanner. Install a cyberdeck to hack targets. |
+| Lynx Paws | legs | 1 | 4 | +30% sneaking speed. |
+| Maneuvering System | nervous | 2 | 5 | +0.08 jump strength and -15% fall damage. |
+| Mantis Blades | arms | 2 | 8 | M extends or retracts the blades; they stay out until toggled off. While extended, unarmed strikes deal +6 damage and cost 3 tolerance per hit. |
+| Microgenerator | hands | 2 | 6 | +1 attack damage. Melee hits have a 15% chance to add a 2.5-damage electrical burst. |
+| Newton Memory Boost | frontal cortex | 2 | 4 | RAM regenerates 0.08/s faster. Sandevistan cooldown reduced by 3 seconds. |
+| Optical Camo | integumentary | 3 | 7 | Grants invisibility while sneaking and standing still. +10% sneaking speed. |
+| Pain Editor | integumentary | 2 | 6 | +2 armor and +2 armor toughness. |
+| Projectile Launch System | arms | 3 | 10 | Unarmed hits trigger an explosion every 5 seconds. Costs 20 tolerance. |
+| Quantum Tuner | frontal cortex | 3 | 6 | Reduces Sandevistan cooldown by 6 seconds. |
+| Reflex Synaptic Accelerator | nervous | 3 | 7 | +2% movement speed and +1 attack speed. |
+| Reinforced Tendons | legs | 2 | 6 | Press jump again in midair to double jump. |
+| Sandevistan | operating system | 3 | 12 | Activates Sandevistan: Speed III and Haste II for 10 s while mobs within 15 blocks are slowed by 85%. 30 s cooldown, 35 tolerance. |
+| Second Heart | circulatory | 3 | 10 | Cancels one lethal hit every 60 s, healing to 30% health with regeneration and absorption. |
+| Self-ICE | frontal cortex | 2 | 4 | Passive ICE protection: +2 armor. |
+| Shock 'n Awe | integumentary | 2 | 6 | Melee attackers within 4 blocks take 2.5 lightning damage. |
+| Smart Link | hands | 2 | 5 | +2 attack damage. |
+| Spring Joints | skeleton | 1 | 5 | +0.15 jump strength and -30% fall damage. |
+| Subdermal Armor | integumentary | 2 | 7 | +4 armor. |
+| Syn-Lungs Bioplastic | circulatory | 2 | 4 | Water breathing and +50% water movement efficiency. |
+| Titanium Bones | skeleton | 2 | 6 | +4 armor toughness. |

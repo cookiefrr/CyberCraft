@@ -1,64 +1,40 @@
-# Changelog
+# Changes
 
-## 0.2.2 — 24 ottobre 2026
+## 0.3.1 — Fabric feature parity
 
-**Novità**
-- Targeting quickhack dal mirino: qualsiasi `LivingEntity` in linea di vista, fino a `min(render distance × 16, 64)` blocchi; il server valida fino a 64.
-- Outline rosso sulle entità visibili nel campo visivo, con aggiornamento a 4 Hz e massimo 48 bersagli.
-- Scheda statistiche cyberpunk sotto il mirino: nome, tipo, fazione, salute, armatura/robustezza, effetti attivi, vulnerabilità e upload; dissolvenza di 120 ms quando il mirino si sposta.
-- Nuove chiavi lang EN/IT per fazione, tipo, stati e hint X/Z.
-- Documento di design `docs/quickhack-targeting.md`.
+Native Fabric registries, attachments, events, networking, menus, biome modifications and rendering bring the current NeoForge gameplay to Fabric. The local GeckoLib jar supplies inventory icons. Saved equipment is copied before respawn synchronization. Ian and Xmilon are credited as authors and contributors.
 
-**Correzioni**
-- Rimossa l'intercettazione della rotella del mouse: con lo scanner aperto la rotella torna a cambiare lo slot della hotbar.
-- `CastHackPayload` include l'entity id; il server verifica entità, distanza, linea di vista e mira prima di applicare l'hack.
+# Changes
 
-**Verifiche**
-- `gradlew build --offline` → `BUILD SUCCESSFUL`; jar `cybercraft-0.2.2.jar` 238.223 byte.
-- Server: `cybercraft 0.2.2`, `Done`, nessun errore.
-- Test grafico lato client (hotbar, outline non giocatore, fade, cast a distanza) ancora da eseguire in un mondo reale.
+### Animated Mantis Blades
 
-## 0.2.1 — 24 ottobre 2026
+Mantis Blades now use a dedicated 3D forearm housing and a long straight, serrated blade with a silver cutting edge and red cabling, rendered in first and third person. M (remappable) toggles the blades with a 300 ms slide-out or retract animation; they remain extended until pressed again. The toggle is server-authoritative and transient: it resets on implant removal, death, logout, or server stop, and is re-sent to players who start tracking the wearer. The +6 unarmed bonus and 3-tolerance cost apply only while the blades are extended and the implant is operational. Retracted blades keep the housing visible. Non-player wearers render the blades permanently extended, preserving their mob loadout behavior. Visual acceptance is performed by the user.
 
-**Correzioni**
-- Banco Impianti: il menu non si chiude più al primo tick. `ImplantForgeMenu` estende `CraftingMenu` e valida `cybercraft:implant_forge`.
-- Schermata Cyberware: rimossi overlap e troncamenti; layout ridisegnato con corpo centrale, 5 slot per lato, barra capacità verticale e modalità compatta.
-- Zona quickhack: pannello rifatto sulla reference Cyberpunk 2077, riga selezionata stabile e stato `BLOCKED` quando la RAM non basta.
-- Barra RAM: 20 segmenti fissi per supportare il massimo 100.
+## 0.3.0 — NeoForge rewrite
 
-**Novità**
-- Rimozione degli impianti dalla schermata Cyberware, con restituzione dell'item.
-- RAM massima portata a 100; l'Ex-Disk ora aumenta solo la rigenerazione.
-- Effetto visivo Sandevistan: scie particellari, tinta teal-verde, vignettatura, speed line, scanline e countdown.
+Native NeoForge 1.21.1 registration, events, attachments, networking, biome modifiers, and data generation replace the Fabric implementation. Existing content IDs and recipes remain. This version requires fresh worlds.
 
-**Verifiche**
-- `gradlew build --offline` → `BUILD SUCCESSFUL`; jar 229.824 byte, 359 entry.
-- Server: `cybercraft 0.2.1`, `Done`, nessun errore.
-- 203 JSON validi; 290 chiavi lang per EN e IT.
+Equipment now stores real component-bearing stacks in extensible data-pack slot types. The inventory-adjacent Cyberware tab includes normal inventory/hotbar controls, paging, detail display, and Back navigation. All maintained content is English. GeckoLib 4.9.3 supplies inventory icon rendering; native geometry remains in held, dropped, and equipped views.
 
-## 0.2.0 — 24 ottobre 2026
+Kiroshi optics and an installed cyberdeck gate scanning/hacking. Remote Access toggles controls, including iron doors. Disruption suppresses redstone output for five seconds without restoring stale block states. Natural hostile humanoids gain capped cyberware loadouts as elapsed world age increases.
 
-- Catalogo cyberware portato a 42 impianti nei 10 slot, con `ImplantEffects` centralizzato.
-- Aggiunti titanio, neodimio e litio con lingotti, blocchi, fusione/blasting e worldgen.
-- Aggiunti scheda circuito, servomotore, gel biologico e lente ottica.
-- Aggiunti Banco Impianti e Tavolo di Installazione; 70 ricette, nessun legno negli impianti.
-- Aggiunto Edgerunner's Book con descrizioni, icone e ricette.
-- Aggiunta schermata Cyberware e HUD scanner cyberpunk.
-- Aggiunte keybind rimappabili e navigazione quickhack con rotella.
-- Rimosse Pistola Smart e Munizioni Smart.
-- Jar: 218.537 byte.
+### Ten flaws addressed
 
-## 0.1.1 — 24 ottobre 2026
+| Existing flaw | Correction and regression coverage |
+|---|---|
+| Free scanner and carried-deck access | Installed optics/deck checks, overload checks, access tests |
+| Standalone UI and fixed body slots | Registered inventory container, named slots, add-on fixture and transfer tests |
+| Italian strings and inaccurate English descriptions | English providers, corrected descriptions, resource completeness checks |
+| No data generation | Deterministic providers, duplicate-resource and asset validation |
+| Bonus melee damage issued as a separate hit | Incoming-damage adjustment, exact damage regression test |
+| Retaliation could retrigger retaliation | Thorns-origin guard, opposing-implant regression test |
+| Reinstall/death could clear ability cooldowns | Persistent independent cooldowns, reinstall and death-copy tests |
+| Effects remained after removal/overload | Saved effect ownership, overload/removal and unrelated-potion tests |
+| Scanner altered teams/glow and retained client state | Rendering-only outlines and disconnect reset; no scoreboard writes |
+| Hacks lacked consistent attribution/protection checks | Hacker-attributed damage, shared aim validation, team/creative/protection tests |
 
-- Cyberware persistente con Fabric Data Attachment e `copyOnDeath`.
-- Capacità cyberware basata sul livello XP.
-- Reinforced Tendons con doppio salto server-authoritative.
-- Sandevistan con keybind, rallentamento mob dell'85%, durata 10 s e ricarica 30 s.
-- 10 slot corporei della tassonomia Cyberpunk 2077.
-- Jar: 65.029 byte.
+Visual acceptance is performed by the user. Dedicated-server and data tests do not prove model placement or UI appearance.
 
-## 0.1.0 — 24 ottobre 2026
+## Previous releases
 
-- Port del progetto a Minecraft 1.21.1 su Fabric.
-- Cyberware con Tolleranza, Cyberdeck con quickhack, Monocorda, Blocco al Neon e Metallo Scuro.
-- Asset, lingue EN/IT, loot table e tag.
+0.2.2 was the Fabric 1.21.1 release with scanner targeting, outlines, and the original standalone cyberware screen. Development now uses loader/version branches. The original `main` and `indev` remain unchanged.
