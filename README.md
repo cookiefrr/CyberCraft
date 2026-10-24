@@ -2,7 +2,7 @@
 
 Cyberpunk-inspired cyberware and netrunning for **Minecraft 1.21.1 / NeoForge**.
 
-**Version:** 0.3.3 · **Development:** `indev` · **Author:** Ian
+**Version:** 0.4.0 · **Development:** `indev` · **Author:** Ian
 
 ## Requirements
 

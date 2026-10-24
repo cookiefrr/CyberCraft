@@ -10,7 +10,8 @@
   ],
   "client": [
     "client.ScannerGlowMixin",
-    "client.ScannerColorMixin"
+    "client.ScannerColorMixin",
+    "client.HandleWrapSwingMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -357,6 +357,7 @@ public final class EnglishLanguage extends LanguageProvider {
     add("msg.cybercraft.removed", "Implant removed: %s");
     add("msg.cybercraft.sandevistan_active", "Sandevistan active");
     add("msg.cybercraft.second_heart", "SECOND HEART: lethal damage negated");
+    add("msg.cybercraft.self_ice", "SELF-ICE: hostile effect blocked");
     add("msg.cybercraft.slot_empty", "No implant in %s");
     add("msg.cybercraft.slot_occupied", "Slot occupied: %s");
     add("quickhack.cybercraft.contagion", "Contagion");

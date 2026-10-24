@@ -1,9 +1,11 @@
 package com.cybercraft.client;
 
 import com.cybercraft.CyberCraft;
+import com.cybercraft.cyberware.animation.Pose;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import java.util.Map;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -24,11 +26,16 @@ public final class MantisBladeRenderer {
   private static final Uv DARK = uv(16.5f, 16.5f, 31.5f, 23.5f);
 
   public static void thirdPerson(
-      PoseStack pose, MultiBufferSource buffer, int light, ModelPart arm, LivingEntity entity) {
+      PoseStack pose,
+      MultiBufferSource buffer,
+      int light,
+      ModelPart arm,
+      LivingEntity entity,
+      Map<String, Pose> bones) {
     float progress = MantisBladeClientState.progress(entity);
     pose.pushPose();
     arm.translateAndRotate(pose);
-    draw(pose, buffer, light, progress);
+    draw(pose, buffer, light, progress, bones);
     pose.popPose();
   }
 
@@ -41,12 +48,21 @@ public final class MantisBladeRenderer {
         pose,
         event.getMultiBufferSource(),
         event.getPackedLight(),
-        MantisBladeClientState.progress(event.getPlayer()));
+        MantisBladeClientState.progress(event.getPlayer()),
+        ImplantAnimationClient.bones(event.getPlayer(), "mantis_blades"));
     pose.popPose();
   }
 
-  private static void draw(PoseStack pose, MultiBufferSource buffer, int light, float progress) {
+  private static void draw(
+      PoseStack pose,
+      MultiBufferSource buffer,
+      int light,
+      float progress,
+      Map<String, Pose> bones) {
     VertexConsumer vc = buffer.getBuffer(RENDER_TYPE);
+    Pose plate = bones.getOrDefault("plate", Pose.REST);
+    pose.pushPose();
+    bone(pose, plate, .30f, -.17f);
     box(pose, vc, light, -.10f, .12f, -.23f, .10f, .47f, -.115f, METAL);
     box(pose, vc, light, -.082f, .135f, -.242f, .082f, .30f, -.228f, RED);
     for (int i = 0; i < 4; i++) {
@@ -57,13 +73,31 @@ public final class MantisBladeRenderer {
     box(pose, vc, light, .098f, .19f, -.222f, .108f, .45f, -.12f, STEEL);
     box(pose, vc, light, -.06f, .46f, -.215f, .06f, .545f, -.13f, DARK);
     box(pose, vc, light, -.035f, .465f, -.222f, .035f, .53f, -.212f, RED);
+    pose.popPose();
     if (progress <= .002f) return;
+    Pose bladeBone = bones.getOrDefault("blade", Pose.REST);
+    Pose edge = bones.getOrDefault("edge", Pose.REST);
     pose.pushPose();
     pose.translate(0, .30f, -.17f);
     pose.mulPose(Axis.XP.rotationDegrees(-14f * progress));
     pose.scale(1, progress, 1);
+    pose.translate(0, -.30f, .17f);
+    bone(pose, bladeBone, .30f, -.17f);
+    pose.scale(edge.sx(), edge.sy(), edge.sz());
     blade(pose, vc, light);
     pose.popPose();
+  }
+
+  private static void bone(PoseStack pose, Pose bone, float pivotY, float pivotZ) {
+    pose.translate(0, pivotY, pivotZ);
+    if (bone.ry() != 0) pose.mulPose(Axis.YP.rotationDegrees(bone.ry()));
+    if (bone.rx() != 0) pose.mulPose(Axis.XP.rotationDegrees(bone.rx()));
+    if (bone.rz() != 0) pose.mulPose(Axis.ZP.rotationDegrees(bone.rz()));
+    if (bone.sx() != 1 || bone.sy() != 1 || bone.sz() != 1)
+      pose.scale(bone.sx(), bone.sy(), bone.sz());
+    pose.translate(0, -pivotY, -pivotZ);
+    if (bone.tx() != 0 || bone.ty() != 0 || bone.tz() != 0)
+      pose.translate(bone.tx() / 16f, bone.ty() / 16f, bone.tz() / 16f);
   }
 
   private static void blade(PoseStack pose, VertexConsumer vc, int light) {

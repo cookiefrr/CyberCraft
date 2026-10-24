@@ -240,6 +240,8 @@ public final class CyberwareManager {
     else if (next.overloaded() && next.tolerance() >= OVERLOAD_EXIT)
       next = next.withOverloaded(false);
     set(entity, next);
+    if (next.ram() > data.ram() && next.has(Cyberware.NEWTON_MEMORY_BOOST))
+      ImplantTriggers.play(entity, com.cybercraft.cyberware.animation.Trigger.RAM);
     if (next.overloaded()) {
       entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 140, 0, false, false));
       if (entity.tickCount % 60 == 0) entity.hurt(entity.damageSources().magic(), OVERLOAD_DAMAGE);

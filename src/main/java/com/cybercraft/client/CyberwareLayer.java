@@ -3,8 +3,6 @@ package com.cybercraft.client;
 import com.cybercraft.CyberCraft;
 import com.cybercraft.cyberware.CyberwareManager;
 import com.cybercraft.cyberware.ImplantModels;
-import com.cybercraft.cyberware.ImplantModels.Group;
-import com.cybercraft.cyberware.ImplantModels.Part;
 import com.cybercraft.equipment.*;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -15,7 +13,6 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 
@@ -37,7 +34,8 @@ public final class CyberwareLayer<T extends LivingEntity, M extends EntityModel<
       float age,
       float yaw,
       float pitch) {
-    if (entity.isInvisible() || !(getParentModel() instanceof HumanoidModel<?> model)) return;
+    if (!(getParentModel() instanceof HumanoidModel<?> model)) return;
+    boolean invisible = entity.isInvisible();
     int fallback = 0;
     for (var entry : CyberwareManager.get(entity).equipment()) {
       var slot =
@@ -49,9 +47,12 @@ public final class CyberwareLayer<T extends LivingEntity, M extends EntityModel<
       if (slot == null) continue;
       var definition = EquipmentRegistry.definition(entity.level(), entry.definition());
       if (definition == null) continue;
+      boolean camo = definition.model().equals(CyberCraft.id("optical_camo"));
+      if (invisible && !camo) continue;
       if (definition.model().equals(CyberCraft.id("mantis_blades"))) {
-        MantisBladeRenderer.thirdPerson(pose, buffer, light, model.rightArm, entity);
-        MantisBladeRenderer.thirdPerson(pose, buffer, light, model.leftArm, entity);
+        var bones = ImplantAnimationClient.bones(entity, "mantis_blades");
+        MantisBladeRenderer.thirdPerson(pose, buffer, light, model.rightArm, entity, bones);
+        MantisBladeRenderer.thirdPerson(pose, buffer, light, model.leftArm, entity, bones);
         continue;
       }
       ImplantModels.Model spec = ImplantModels.get(definition.model().getPath());
@@ -59,32 +60,15 @@ public final class CyberwareLayer<T extends LivingEntity, M extends EntityModel<
         legacy(pose, buffer, light, model, slot.anchor(), entry, entity, fallback++);
         continue;
       }
-      for (int i = 0; i < spec.groups().size(); i++) {
-        Group group = spec.groups().get(i);
-        ModelPart part = part(model, group.part());
-        if (part == null) continue;
-        String path =
-            definition.model().getPath()
-                + "_worn_"
-                + i
-                + (group.mirror() && ImplantModels.isLeft(group.part()) ? "_left" : "");
-        pose.pushPose();
-        part.translateAndRotate(pose);
-        drawWorn(pose, buffer, light, entry, CyberCraft.id("item/" + path));
-        pose.popPose();
-      }
+      ImplantRenderer.draw(
+          pose,
+          buffer,
+          light,
+          spec,
+          model,
+          null,
+          ImplantAnimationClient.bones(entity, definition.model().getPath()));
     }
-  }
-
-  private static ModelPart part(HumanoidModel<?> model, Part part) {
-    return switch (part) {
-      case HEAD -> model.head;
-      case BODY -> model.body;
-      case RIGHT_ARM -> model.rightArm;
-      case LEFT_ARM -> model.leftArm;
-      case RIGHT_LEG -> model.rightLeg;
-      case LEFT_LEG -> model.leftLeg;
-    };
   }
 
   private static void legacy(
@@ -165,27 +149,5 @@ public final class CyberwareLayer<T extends LivingEntity, M extends EntityModel<
             light,
             OverlayTexture.NO_OVERLAY,
             model);
-  }
-
-  public static void drawWorn(
-      PoseStack pose,
-      MultiBufferSource buffer,
-      int light,
-      InstalledImplant entry,
-      ResourceLocation modelId) {
-    var client = Minecraft.getInstance();
-    client
-        .getItemRenderer()
-        .render(
-            entry.stack(),
-            ItemDisplayContext.FIXED,
-            false,
-            pose,
-            buffer,
-            light,
-            OverlayTexture.NO_OVERLAY,
-            client
-                .getModelManager()
-                .getModel(ModelResourceLocation.standalone(modelId)));
   }
 }

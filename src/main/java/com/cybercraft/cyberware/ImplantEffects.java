@@ -359,6 +359,7 @@ public final class ImplantEffects {
     }
     if (data.has(Cyberware.MICROGENERATOR) && player.getRandom().nextFloat() < .15f) {
       bonus += 2.5f;
+      ImplantTriggers.play(player, com.cybercraft.cyberware.animation.Trigger.HIT);
       ((ServerLevel) player.level())
           .sendParticles(
               ParticleTypes.ELECTRIC_SPARK,
@@ -378,6 +379,7 @@ public final class ImplantEffects {
     var data = CyberwareManager.get(player);
     if (!CyberwareManager.operational(player)) return;
     ServerLevel level = (ServerLevel) player.level();
+    ImplantTriggers.play(player, com.cybercraft.cyberware.animation.Trigger.PUNCH);
     if (player.getMainHandItem().isEmpty()
         && data.has(Cyberware.PROJECTILE_LAUNCHER)
         && CyberwareManager.get(player).tolerance() > 0
@@ -390,6 +392,7 @@ public final class ImplantEffects {
           target.getZ(),
           1.6f,
           net.minecraft.world.level.Level.ExplosionInteraction.NONE);
+      ImplantTriggers.play(player, com.cybercraft.cyberware.animation.Trigger.LAUNCH);
     }
   }
 
@@ -400,6 +403,7 @@ public final class ImplantEffects {
     }
     if (data.has(Cyberware.HEAL_ON_KILL)) {
       player.heal(4.0f);
+      ImplantTriggers.play(player, com.cybercraft.cyberware.animation.Trigger.INJECT);
       ServerLevel level = (ServerLevel) player.level();
       level.sendParticles(
           ParticleTypes.HEART,
@@ -433,6 +437,7 @@ public final class ImplantEffects {
           player,
           "biomonitor",
           new MobEffectInstance(MobEffects.ABSORPTION, 200, 1, true, false, true));
+      ImplantTriggers.play(player, com.cybercraft.cyberware.animation.Trigger.INJECT);
       CyberwareManager.say(
           player,
           Component.translatable("msg.cybercraft.biomonitor")
@@ -464,6 +469,7 @@ public final class ImplantEffects {
           player,
           "adrenaline_converter",
           new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 120, 0, true, false, true));
+      ImplantTriggers.play(player, com.cybercraft.cyberware.animation.Trigger.INJECT);
       CyberwareManager.say(
           player,
           Component.translatable("msg.cybercraft.adrenaline")
@@ -476,6 +482,7 @@ public final class ImplantEffects {
         && attacker != player
         && attacker.distanceToSqr(player) <= 16.0) {
       attacker.hurt(level.damageSources().thorns(player), 2.5f);
+      ImplantTriggers.play(player, com.cybercraft.cyberware.animation.Trigger.DISCHARGE);
       level.sendParticles(
           ParticleTypes.ELECTRIC_SPARK,
           attacker.getX(),
@@ -499,6 +506,7 @@ public final class ImplantEffects {
       return true;
     }
     CyberwareManager.set(player, data.withCooldown(SECOND_HEART_READY, now + 1200));
+    ImplantTriggers.play(player, com.cybercraft.cyberware.animation.Trigger.REVIVE);
     player.setHealth(Math.max(6.0f, player.getMaxHealth() * 0.3f));
     OwnedEffects.grant(
         player,

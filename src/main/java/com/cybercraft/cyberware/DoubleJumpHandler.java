@@ -49,6 +49,8 @@ public final class DoubleJumpHandler {
     if (player instanceof ServerPlayer serverPlayer)
       serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(player));
 
+    ImplantTriggers.play(player, com.cybercraft.cyberware.animation.Trigger.JUMP);
+    ImplantTriggers.play(player, com.cybercraft.cyberware.animation.Trigger.BOOST);
     ServerLevel level = (ServerLevel) player.level();
     level.sendParticles(
         ParticleTypes.CLOUD,

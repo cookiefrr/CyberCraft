@@ -1,6 +1,7 @@
 package com.cybercraft;
 
 import com.cybercraft.cyberware.*;
+import com.cybercraft.cyberware.animation.Trigger;
 import com.cybercraft.netrunning.NetrunnerManager;
 import com.cybercraft.network.ModNetworking;
 import com.cybercraft.registry.*;
@@ -47,13 +48,19 @@ public final class CyberCraft {
                   || living.hasData(ModAttachments.CYBERWARE)
                       && !CyberwareManager.get(living).equipment().isEmpty())) {
             OwnedEffects.reconcile(living);
+            LandingTracker.tick(living);
             if (living.tickCount % 20 == 0) CyberwareManager.tick(living);
           }
         });
     NeoForge.EVENT_BUS.addListener(
-        (net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent e) ->
-            DoubleJumpHandler.forget(e.getEntity()));
+        (net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent e) -> {
+          DoubleJumpHandler.forget(e.getEntity());
+          LandingTracker.forget(e.getEntity());
+        });
     NeoForge.EVENT_BUS.addListener(com.cybercraft.mob.MobProgression::spawn);
+    NeoForge.EVENT_BUS.addListener(
+        (net.neoforged.neoforge.event.entity.living.MobEffectEvent.Applicable e) ->
+            SelfIceGuard.applicable(e));
     NeoForge.EVENT_BUS.addListener(
         (net.neoforged.neoforge.event.server.ServerStartedEvent e) ->
             com.cybercraft.equipment.EquipmentRegistry.validate(e.getServer().overworld()));
@@ -98,6 +105,7 @@ public final class CyberCraft {
     NeoForge.EVENT_BUS.addListener(
         (ServerStoppedEvent e) -> {
           DoubleJumpHandler.clear();
+          LandingTracker.clear();
           SandevistanManager.clear();
           ImplantEffects.clear();
           NetrunnerManager.clear();
@@ -115,8 +123,12 @@ public final class CyberCraft {
 
   private static void damage(LivingDamageEvent.Post event) {
     if (event.getNewDamage() <= 0) return;
-    if (event.getEntity().hasData(ModAttachments.CYBERWARE))
+    if (event.getEntity().hasData(ModAttachments.CYBERWARE)) {
       CyberwareManager.onDamaged(event.getEntity(), event.getSource());
+      ImplantTriggers.play(event.getEntity(), Trigger.DAMAGE);
+      if (event.getSource().is(net.minecraft.tags.DamageTypeTags.IS_FIRE))
+        ImplantTriggers.play(event.getEntity(), Trigger.GROUND);
+    }
     if (event.getSource().getEntity() instanceof net.minecraft.world.entity.LivingEntity player
         && event.getSource().getDirectEntity() == player
         && (event.getSource().is(net.minecraft.world.damagesource.DamageTypes.PLAYER_ATTACK)
@@ -131,8 +143,10 @@ public final class CyberCraft {
       return;
     }
     MantisBladeManager.reset(event.getEntity());
-    if (event.getSource().getEntity() instanceof net.minecraft.world.entity.LivingEntity player)
+    if (event.getSource().getEntity() instanceof net.minecraft.world.entity.LivingEntity player) {
       CyberwareManager.onKill(player, event.getEntity());
+      ImplantTriggers.play(player, Trigger.KILL);
+    }
   }
 
   private static void sync(PlayerEvent event) {

@@ -19,6 +19,12 @@ class ImplantModelsTest {
       for (var group : model.groups()) {
         assertNotNull(group.part(), implant.id());
         assertFalse(group.boxes().isEmpty(), implant.id());
+        assertNotNull(group.bone(), implant.id());
+        assertFalse(group.bone().isBlank(), implant.id());
+        assertNotNull(group.pivot(), implant.id());
+        assertTrue(Double.isFinite(group.pivot().x()), implant.id() + " pivot " + group.bone());
+        assertTrue(Double.isFinite(group.pivot().y()), implant.id() + " pivot " + group.bone());
+        assertTrue(Double.isFinite(group.pivot().z()), implant.id() + " pivot " + group.bone());
         for (var box : group.boxes()) {
           assertNotNull(box.material(), implant.id());
           assertTrue(box.x0() < box.x1(), implant.id());
@@ -43,6 +49,16 @@ class ImplantModelsTest {
       assertNotNull(model, implant.id());
       for (var group : model.groups())
         if (group.mirror()) assertTrue(ImplantModels.isLeft(group.part()), implant.id());
+    }
+  }
+
+  @Test
+  void bonesAreUniqueInsideEveryModel() {
+    for (var implant : Cyberware.values()) {
+      var model = ImplantModels.get(implant.id());
+      Set<String> bones = new HashSet<>();
+      for (var group : model.groups())
+        assertTrue(bones.add(group.bone()), implant.id() + " duplicate bone " + group.bone());
     }
   }
 

@@ -23,22 +23,10 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public final class ClientEquipment {
   @SubscribeEvent
   public static void iconModels(ModelEvent.RegisterAdditional event) {
-    for (var implant : Cyberware.values()) {
+    for (var implant : Cyberware.values())
       event.register(
           net.minecraft.client.resources.model.ModelResourceLocation.standalone(
               CyberCraft.id("item/icons/" + implant.id())));
-      var spec = ImplantModels.get(implant.id());
-      if (spec == null) continue;
-      for (int i = 0; i < spec.groups().size(); i++) {
-        event.register(
-            net.minecraft.client.resources.model.ModelResourceLocation.standalone(
-                CyberCraft.id("item/" + implant.id() + "_worn_" + i)));
-        if (spec.groups().get(i).mirror())
-          event.register(
-              net.minecraft.client.resources.model.ModelResourceLocation.standalone(
-                  CyberCraft.id("item/" + implant.id() + "_worn_" + i + "_left")));
-      }
-    }
   }
 
   @SubscribeEvent
@@ -141,11 +129,6 @@ public final class ClientEquipment {
     var entity = event.getPlayer();
     var dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
     if (!(dispatcher.getRenderer(entity) instanceof PlayerRenderer renderer)) return;
-    var model = renderer.getModel();
-    var part =
-        event.getArm() == net.minecraft.world.entity.HumanoidArm.RIGHT
-            ? model.rightArm
-            : model.leftArm;
     for (var entry : CyberwareManager.get(entity).equipment()) {
       var slot =
           entity
@@ -171,30 +154,14 @@ public final class ClientEquipment {
         pose.popPose();
         continue;
       }
-      var arm = event.getArm();
-      for (int i = 0; i < spec.groups().size(); i++) {
-        var group = spec.groups().get(i);
-        boolean matches =
-            arm == net.minecraft.world.entity.HumanoidArm.RIGHT
-                ? group.part() == ImplantModels.Part.RIGHT_ARM
-                : group.part() == ImplantModels.Part.LEFT_ARM;
-        if (!matches) continue;
-        String path =
-            definition.model().getPath()
-                + "_worn_"
-                + i
-                + (group.mirror() && ImplantModels.isLeft(group.part()) ? "_left" : "");
-        var pose = event.getPoseStack();
-        pose.pushPose();
-        part.translateAndRotate(pose);
-        CyberwareLayer.drawWorn(
-            pose,
-            event.getMultiBufferSource(),
-            event.getPackedLight(),
-            entry,
-            CyberCraft.id("item/" + path));
-        pose.popPose();
-      }
+      ImplantRenderer.draw(
+          event.getPoseStack(),
+          event.getMultiBufferSource(),
+          event.getPackedLight(),
+          spec,
+          renderer.getModel(),
+          event.getArm(),
+          ImplantAnimationClient.bones(entity, definition.model().getPath()));
     }
   }
 

@@ -1,5 +1,13 @@
 # Changes
 
+## 0.4.0 — Animated cyberware
+
+Every implant now has a bone layer with authored pivots, and all 43 implants play idle, active, and trigger animations driven by gameplay. The catalogue covers idle loops, state loops (Sandevistan, Berserk, Optical Camo, Mantis Blades), and one-shot clips for kills, damage, hacks, cooldowns, RAM changes, jumps, landings, attacks, impacts, revives, injections, refills, suppression, discharges, and launches. Clips are evaluated per bone with idle → active → trigger priority, easing, and looping, and are replicated through discrete trigger payloads.
+
+Bones, boxes, and tracks are authored in humanoid model pixels and rendered directly from the palette atlas; left limbs are generated as mirrored groups. The Mantis Blades renderer consumes its plate, blade, and edge bones for lift, deploy, alternating slashes, and edge pulse; the Monowire gains a first-person whip driven by swing progress; a mixin damps the swing arc while Handle Wrap is installed.
+
+Self-ICE gains one disclosed behaviour: a hostile mob effect that would be applied while the implant is operational is cancelled with a 60-second cooldown, a barrier clip, particles, and a message. Landing events feed the LAND trigger. Emissive shading remains shader-only.
+
 ## 0.3.3 — Cuboid cyberware models
 
 Every implant now has a dedicated palette-based 3D item model and hand-authored worn geometry made only of cuboids; the Monowire also gains a 3D item model. Worn models are authored in humanoid model pixels and attached to the head, torso, arms, or legs, with generated mirrored variants for left limbs. They align with the player model in third person and with the rendered arm in first person. A 256×256 material atlas provides dark metal, chrome, titanium, ceramics, circuits, and neon accents with blocky light/base/dark shading. Mantis Blades keep their animated renderer and 300 ms toggle, recolored to white ceramic, silver, and neon orange. No gameplay or balance changes.

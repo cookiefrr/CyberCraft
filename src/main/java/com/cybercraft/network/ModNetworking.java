@@ -45,5 +45,9 @@ public final class ModNetworking {
         OpenBookPayload.TYPE, OpenBookPayload.CODEC, (p, c) -> ClientPayloads.openBook());
     r.playToClient(
         HackResultPayload.TYPE, HackResultPayload.CODEC, (p, c) -> ClientPayloads.result(p));
+    r.playToClient(
+        ImplantAnimationPayload.TYPE,
+        ImplantAnimationPayload.CODEC,
+        (p, c) -> ClientPayloads.animation(p));
   }
 }

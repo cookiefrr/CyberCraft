@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.cybercraft.cyberware.ImplantModels;
 import com.google.gson.*;
 import java.nio.file.*;
+import javax.imageio.ImageIO;
 import org.junit.jupiter.api.Test;
 
 class ResourceTest {
@@ -50,26 +51,37 @@ class ResourceTest {
             model3d.getAsJsonObject("textures").get("palette").getAsString());
         var spec = ImplantModels.get(id);
         assertNotNull(spec, id);
-        for (int i = 0; i < spec.groups().size(); i++) {
-          var worn =
-              read(
-                  GENERATED.resolve(
-                      "assets/cybercraft/models/item/" + id + "_worn_" + i + ".json"));
-          assertFalse(worn.getAsJsonArray("elements").isEmpty(), id + " worn " + i);
-          assertEquals(0, worn.getAsJsonObject("display").size(), id + " worn display " + i);
-          if (spec.groups().get(i).mirror()) {
-            var left =
-                read(
-                    GENERATED.resolve(
-                        "assets/cybercraft/models/item/" + id + "_worn_" + i + "_left.json"));
-            assertFalse(left.getAsJsonArray("elements").isEmpty(), id + " worn left " + i);
-          }
-        }
+        assertFalse(
+            Files.exists(
+                GENERATED.resolve("assets/cybercraft/models/item/" + id + "_worn_0.json")),
+            id + " still generates worn models");
         assertTrue(
             Files.exists(
                 ROOT.resolve("src/main/resources/assets/cybercraft/textures/item/" + id + ".png")));
       }
     }
+  }
+
+  @Test
+  void paletteAndEmissiveAtlasesExistAtFullSize() throws Exception {
+    var palette =
+        ImageIO.read(
+            ROOT.resolve("src/main/resources/assets/cybercraft/textures/item/cyberware_palette.png")
+                .toFile());
+    assertNotNull(palette);
+    assertEquals(256, palette.getWidth());
+    assertEquals(256, palette.getHeight());
+    var emissive =
+        ImageIO.read(
+            ROOT.resolve(
+                    "src/main/resources/assets/cybercraft/textures/item/cyberware_palette_e.png")
+                .toFile());
+    assertNotNull(emissive);
+    assertEquals(256, emissive.getWidth());
+    assertEquals(256, emissive.getHeight());
+    int swatches =
+        ImplantModels.Material.values().length * ImplantModels.Tone.values().length;
+    assertTrue(swatches <= 256, "palette swatches " + swatches);
   }
 
   @Test

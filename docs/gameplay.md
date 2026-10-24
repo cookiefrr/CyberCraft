@@ -58,7 +58,7 @@ Implant item icons remain flat in inventory/hotbar views. In the world and on th
 | Reinforced Tendons | legs | 2 | 6 | Press jump again in midair to double jump. |
 | Sandevistan | operating system | 3 | 12 | Activates Sandevistan: Speed III and Haste II for 10 s while mobs within 15 blocks are slowed by 85%. 30 s cooldown, 35 tolerance. |
 | Second Heart | circulatory | 3 | 10 | Cancels one lethal hit every 60 s, healing to 30% health with regeneration and absorption. |
-| Self-ICE | frontal cortex | 2 | 4 | Passive ICE protection: +2 armor. |
+| Self-ICE | frontal cortex | 2 | 4 | Passive ICE protection: +2 armor. Blocks one hostile mob effect every 60 s. |
 | Shock 'n Awe | integumentary | 2 | 6 | Melee attackers within 4 blocks take 2.5 lightning damage. |
 | Smart Link | hands | 2 | 5 | +2 attack damage. |
 | Spring Joints | skeleton | 1 | 5 | +0.15 jump strength and -30% fall damage. |

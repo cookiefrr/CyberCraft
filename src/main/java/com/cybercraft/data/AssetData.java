@@ -2,13 +2,11 @@ package com.cybercraft.data;
 
 import com.cybercraft.cyberware.ImplantModels;
 import com.cybercraft.cyberware.ImplantModels.Box;
-import com.cybercraft.cyberware.ImplantModels.Group;
 import com.cybercraft.cyberware.ImplantModels.Material;
 import com.cybercraft.cyberware.ImplantModels.Model;
 import com.cybercraft.cyberware.ImplantModels.Tone;
 import com.cybercraft.registry.*;
 import com.google.gson.*;
-import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.data.PackOutput;
 
@@ -80,16 +78,6 @@ public final class AssetData extends JsonDataProvider {
               "minecraft:item/generated",
               "textures",
               obj("layer0", "cybercraft:item/" + id)));
-      for (int i = 0; i < spec.groups().size(); i++) {
-        Group group = spec.groups().get(i);
-        add(
-            "assets/cybercraft/models/item/" + id + "_worn_" + i + ".json",
-            wornModel(group.boxes()));
-        if (group.mirror())
-          add(
-              "assets/cybercraft/models/item/" + id + "_worn_" + i + "_left.json",
-              wornModel(mirrored(group.boxes())));
-      }
       add(
           "assets/cybercraft/models/item/" + id + ".json",
           obj(
@@ -133,37 +121,8 @@ public final class AssetData extends JsonDataProvider {
         "from", array(f(x0), f(y0), f(z0)), "to", array(f(x1), f(y1), f(z1)), "faces", faces);
   }
 
-  private JsonArray paletteElements(List<Box> boxes) {
-    var elements = new JsonArray();
-    for (Box box : boxes) elements.add(paletteCube(box));
-    return elements;
-  }
-
-  private JsonObject wornModel(List<Box> boxes) {
-    JsonObject model =
-        obj(
-            "parent",
-            "minecraft:block/block",
-            "textures",
-            obj(
-                "particle",
-                "cybercraft:item/cyberware_palette",
-                "palette",
-                "cybercraft:item/cyberware_palette"),
-            "display",
-            obj(),
-            "elements",
-            paletteElements(boxes));
-    for (Box box : boxes)
-      if (box.material() == Material.GLASS) {
-        model.addProperty("render_type", "minecraft:translucent");
-        break;
-      }
-    return model;
-  }
-
   private JsonObject itemModel(Model spec) {
-    List<Box> boxes = spec.groups().get(0).boxes();
+    List<Box> boxes = spec.itemBoxes();
     float minX = Float.MAX_VALUE, minY = Float.MAX_VALUE, minZ = Float.MAX_VALUE;
     float maxX = -Float.MAX_VALUE, maxY = -Float.MAX_VALUE, maxZ = -Float.MAX_VALUE;
     for (Box box : boxes) {
@@ -178,7 +137,9 @@ public final class AssetData extends JsonDataProvider {
     float largest = Math.max(maxX - minX, Math.max(maxY - minY, maxZ - minZ));
     float scale = 13f / Math.max(largest, .001f);
     var elements = new JsonArray();
-    for (Box box : boxes)
+    boolean translucent = false;
+    for (Box box : boxes) {
+      if (isTranslucent(box.material())) translucent = true;
       elements.add(
           paletteCube(
               8 + (box.x0() - cx) * scale,
@@ -188,39 +149,39 @@ public final class AssetData extends JsonDataProvider {
               8 + (box.y1() - cy) * scale,
               8 + (box.z1() - cz) * scale,
               box.material()));
-    return obj(
-        "parent",
-        "minecraft:block/block",
-        "gui_light",
-        "front",
-        "textures",
+    }
+    JsonObject model =
         obj(
-            "particle",
-            "cybercraft:item/cyberware_palette",
-            "palette",
-            "cybercraft:item/cyberware_palette"),
-        "elements",
-        elements,
-        "display",
-        obj(
-            "gui",
-            transform(25, 225, 0, 0, 0, 0, .75f),
-            "ground",
-            transform(0, 0, 0, 0, 2, 0, .4f),
-            "fixed",
-            transform(0, 0, 180, 0, 0, 0, 1),
-            "thirdperson_righthand",
-            transform(75, 45, 0, 0, 2, 1, .5f),
-            "firstperson_righthand",
-            transform(0, 45, 0, 1, 2, 0, .55f)));
+            "parent",
+            "minecraft:block/block",
+            "gui_light",
+            "front",
+            "textures",
+            obj(
+                "particle",
+                "cybercraft:item/cyberware_palette",
+                "palette",
+                "cybercraft:item/cyberware_palette"),
+            "elements",
+            elements,
+            "display",
+            obj(
+                "gui",
+                transform(25, 225, 0, 0, 0, 0, .75f),
+                "ground",
+                transform(0, 0, 0, 0, 2, 0, .4f),
+                "fixed",
+                transform(0, 0, 180, 0, 0, 0, 1),
+                "thirdperson_righthand",
+                transform(75, 45, 0, 0, 2, 1, .5f),
+                "firstperson_righthand",
+                transform(0, 45, 0, 1, 2, 0, .55f)));
+    if (translucent) model.addProperty("render_type", "minecraft:translucent");
+    return model;
   }
 
-  private static List<Box> mirrored(List<Box> boxes) {
-    var result = new ArrayList<Box>(boxes.size());
-    for (Box box : boxes)
-      result.add(
-          new Box(-box.x1(), box.y0(), box.z0(), -box.x0(), box.y1(), box.z1(), box.material()));
-    return result;
+  private static boolean isTranslucent(Material material) {
+    return material == Material.GLASS || material == Material.HOLO || material == Material.FLASH;
   }
 
   private static float f(float value) {

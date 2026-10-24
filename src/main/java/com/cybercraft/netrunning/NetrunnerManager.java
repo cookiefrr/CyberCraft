@@ -87,6 +87,7 @@ public final class NetrunnerManager {
     if (!CyberwareManager.spendRam(entity, ramCost(entity, hack)))
       return fail(entity, 2, "msg.cybercraft.no_ram");
     CyberwareManager.ready(entity, "quickhack", COOLDOWN_TICKS);
+    ImplantTriggers.play(entity, com.cybercraft.cyberware.animation.Trigger.HACK);
     return 0;
   }
 

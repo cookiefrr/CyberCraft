@@ -45,8 +45,27 @@ const materials = [
   ['BONE', 0xc9bd97],
   ['AMBER', 0xc98216],
   ['TOXIC', 0x74d414],
-  ['GLASS', 0x9fe8f5]
+  ['GLASS', 0x9fe8f5],
+  ['HOLO', 0x5fe6ff],
+  ['FLASH', 0xffffff]
 ];
+
+const TRANSLUCENT = new Set(['GLASS', 'HOLO', 'FLASH']);
+const EMISSIVE = new Set([
+  'CYAN',
+  'NEON_ORANGE',
+  'NEON_RED',
+  'NEON_YELLOW',
+  'ELECTRIC_BLUE',
+  'TOXIC',
+  'ACID',
+  'VIOLET',
+  'PURPLE',
+  'AMBER',
+  'CIRCUIT',
+  'MEDICAL',
+  'EMERALD'
+]);
 
 function set(x, y, r, g, b, a = 255) {
   if (x < 0 || y < 0 || x >= W || y >= H) return;
@@ -87,7 +106,7 @@ function drawSwatch(name, base, tone, index) {
   const ox = (index % 16) * CELL;
   const oy = Math.floor(index / 16) * CELL;
   const [r0, g0, b0] = toneColor(base, tone);
-  const alpha = name === 'GLASS' ? (tone === 0 ? 160 : tone === 1 ? 145 : 125) : 255;
+  const alpha = TRANSLUCENT.has(name) ? (tone === 0 ? 170 : tone === 1 ? 150 : 130) : 255;
   for (let y = 0; y < CELL; y++) {
     for (let x = 0; x < CELL; x++) {
       let r = jitter(r0, 5, index * 71 + x * 17 + y * 31);
@@ -123,6 +142,14 @@ function drawSwatch(name, base, tone, index) {
         if (x === y || x === y + 1) { r = 240; g = 255; b = 255; }
         a = x === 0 || y === 0 || x === 15 || y === 15 ? 215 : alpha;
       }
+      if (name === 'HOLO') {
+        if (y % 3 === 0) { r = 190; g = 255; b = 255; }
+        a = x === 0 || y === 0 || x === 15 || y === 15 ? 210 : alpha;
+      }
+      if (name === 'FLASH') {
+        if ((x + y) % 7 === 0) { r = 255; g = 255; b = 255; }
+        a = x === 0 || y === 0 || x === 15 || y === 15 ? 220 : alpha;
+      }
       if (['RUST', 'CONCRETE', 'BONE'].includes(name) && (x * 3 + y * 7) % 19 === 0) {
         r -= 18; g -= 18; b -= 18;
       }
@@ -154,10 +181,41 @@ for (let y = 0; y < H; y++) {
   }
 }
 
-const raw = Buffer.alloc((W * 4 + 1) * H);
+const epx = new Uint8Array(W * H * 4);
 for (let y = 0; y < H; y++) {
-  raw[y * (W * 4 + 1)] = 0;
-  Buffer.from(px.buffer, y * W * 4, W * 4).copy(raw, y * (W * 4 + 1) + 1);
+  for (let x = 0; x < W; x++) {
+    const i = (y * W + x) * 4;
+    epx[i] = 0; epx[i + 1] = 0; epx[i + 2] = 0; epx[i + 3] = 255;
+  }
+}
+
+function drawEmissiveSwatch(name, base, tone, index) {
+  const ox = (index % 16) * CELL;
+  const oy = Math.floor(index / 16) * CELL;
+  const [r0, g0, b0] = toneColor(base, tone);
+  const boost = tone === 0 ? 1.08 : tone === 1 ? 1.0 : 0.82;
+  for (let y = 0; y < CELL; y++) {
+    for (let x = 0; x < CELL; x++) {
+      let r = clamp(r0 * boost);
+      let g = clamp(g0 * boost);
+      let b = clamp(b0 * boost);
+      if (x === 0 || y === 0 || x === 15 || y === 15) {
+        r = clamp(r * 0.7);
+        g = clamp(g * 0.7);
+        b = clamp(b * 0.7);
+      }
+      const i = ((oy + y) * W + ox + x) * 4;
+      epx[i] = r; epx[i + 1] = g; epx[i + 2] = b; epx[i + 3] = 255;
+    }
+  }
+}
+
+index = 0;
+for (const [name, base] of materials) {
+  for (let tone = 0; tone < 3; tone++) {
+    if (EMISSIVE.has(name)) drawEmissiveSwatch(name, base, tone, index);
+    index++;
+  }
 }
 
 let table = null;
@@ -184,19 +242,31 @@ function chunk(type, data) {
   return Buffer.concat([len, body, crc]);
 }
 
-const ihdr = Buffer.alloc(13);
-ihdr.writeUInt32BE(W, 0);
-ihdr.writeUInt32BE(H, 4);
-ihdr[8] = 8;
-ihdr[9] = 6;
-const png = Buffer.concat([
-  Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
-  chunk('IHDR', ihdr),
-  chunk('IDAT', zlib.deflateSync(raw, { level: 9 })),
-  chunk('IEND', Buffer.alloc(0))
-]);
+function png(pixels) {
+  const raw = Buffer.alloc((W * 4 + 1) * H);
+  for (let y = 0; y < H; y++) {
+    raw[y * (W * 4 + 1)] = 0;
+    Buffer.from(pixels.buffer, y * W * 4, W * 4).copy(raw, y * (W * 4 + 1) + 1);
+  }
+  const ihdr = Buffer.alloc(13);
+  ihdr.writeUInt32BE(W, 0);
+  ihdr.writeUInt32BE(H, 4);
+  ihdr[8] = 8;
+  ihdr[9] = 6;
+  return Buffer.concat([
+    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+    chunk('IHDR', ihdr),
+    chunk('IDAT', zlib.deflateSync(raw, { level: 9 })),
+    chunk('IEND', Buffer.alloc(0))
+  ]);
+}
 
 const out = process.argv[2];
 if (!out) throw new Error('usage: node gen-cyberware-palette.js <output.png>');
-fs.writeFileSync(out, png);
-console.log('wrote', out, png.length, 'bytes', index, 'swatches');
+const base = png(px);
+fs.writeFileSync(out, base);
+const emissive = png(epx);
+const emissiveOut = out.replace(/\.png$/, '_e.png');
+fs.writeFileSync(emissiveOut, emissive);
+console.log('wrote', out, base.length, 'bytes and', emissiveOut, emissive.length, 'bytes');
+

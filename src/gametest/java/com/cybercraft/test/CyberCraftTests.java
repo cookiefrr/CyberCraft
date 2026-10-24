@@ -546,4 +546,63 @@ public final class CyberCraftTests {
           h.succeed();
         });
   }
+
+  @GameTest(template = "empty")
+  public static void animationPayloadRoundTrips(GameTestHelper h) {
+    var payload =
+        new com.cybercraft.network.ImplantAnimationPayload(42, "mantis_blades", "slash_r");
+    var buffer =
+        new net.minecraft.network.RegistryFriendlyByteBuf(
+            io.netty.buffer.Unpooled.buffer(), h.getLevel().registryAccess());
+    com.cybercraft.network.ImplantAnimationPayload.CODEC.encode(buffer, payload);
+    var decoded = com.cybercraft.network.ImplantAnimationPayload.CODEC.decode(buffer);
+    h.assertTrue(decoded.equals(payload), "Payload round-trip mismatch: " + decoded);
+    h.succeed();
+  }
+
+  @GameTest(template = "empty")
+  public static void triggerDispatchToleratesMissingClips(GameTestHelper h) {
+    var bare = mob(h);
+    com.cybercraft.cyberware.ImplantTriggers.play(
+        bare, com.cybercraft.cyberware.animation.Trigger.DAMAGE);
+    var entity = mob(h);
+    install(entity, Cyberware.BLOOD_PUMP);
+    com.cybercraft.cyberware.ImplantTriggers.play(
+        entity, com.cybercraft.cyberware.animation.Trigger.DAMAGE);
+    com.cybercraft.cyberware.ImplantTriggers.play(
+        entity, com.cybercraft.cyberware.animation.Trigger.LAND);
+    h.succeed();
+  }
+
+  @GameTest(template = "empty")
+  public static void selfIceBlocksHostileEffectsOncePerCooldown(GameTestHelper h) {
+    var entity = h.spawnWithNoFreeWill(EntityType.COW, 2, 1, 2);
+    var poison = new MobEffectInstance(MobEffects.POISON, 100);
+    var before =
+        new net.neoforged.neoforge.event.entity.living.MobEffectEvent.Applicable(
+            entity, poison, null);
+    SelfIceGuard.applicable(before);
+    h.assertTrue(before.getApplicationResult(), "Self-ICE blocked without the implant");
+    install(entity, Cyberware.SELF_ICE);
+    var blocked =
+        new net.neoforged.neoforge.event.entity.living.MobEffectEvent.Applicable(
+            entity, poison, null);
+    SelfIceGuard.applicable(blocked);
+    h.assertFalse(blocked.getApplicationResult(), "Self-ICE did not block a hostile effect");
+    h.assertTrue(
+        CyberwareManager.get(entity).cooldowns().getOrDefault("self_ice", 0L)
+            > entity.level().getGameTime(),
+        "Self-ICE block did not set a cooldown");
+    var cooling =
+        new net.neoforged.neoforge.event.entity.living.MobEffectEvent.Applicable(
+            entity, poison, null);
+    SelfIceGuard.applicable(cooling);
+    h.assertTrue(cooling.getApplicationResult(), "Self-ICE blocked while cooling down");
+    var helpful =
+        new net.neoforged.neoforge.event.entity.living.MobEffectEvent.Applicable(
+            entity, new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 100), null);
+    SelfIceGuard.applicable(helpful);
+    h.assertTrue(helpful.getApplicationResult(), "Self-ICE blocked a beneficial effect");
+    h.succeed();
+  }
 }

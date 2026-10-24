@@ -43,6 +43,8 @@ public final class SandevistanManager {
         entity,
         CyberwareManager.get(entity).withSandevistan(now + duration, now + duration + cooldown));
     ACTIVE.put(entity.getUUID(), entity);
+    ImplantTriggers.play(entity, com.cybercraft.cyberware.animation.Trigger.ACTIVATE);
+    ImplantTriggers.play(entity, com.cybercraft.cyberware.animation.Trigger.COOLDOWN);
     refresh(entity);
     var level = (ServerLevel) entity.level();
     level.sendParticles(

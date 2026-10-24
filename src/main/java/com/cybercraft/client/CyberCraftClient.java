@@ -74,6 +74,7 @@ public final class CyberCraftClient {
       EntityOutlineManager.reset();
       ScannerState.close();
       MantisBladeClientState.clear();
+      ImplantAnimationClient.clear();
       ClientCyberwareState.set(com.cybercraft.cyberware.CyberwareData.DEFAULT);
     }
   }

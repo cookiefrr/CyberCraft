@@ -27,4 +27,8 @@ public final class ClientPayloads {
   public static void mantis(MantisBladeStatePayload p) {
     MantisBladeClientState.set(p.entityId(), p.extended(), p.animate());
   }
+
+  public static void animation(ImplantAnimationPayload p) {
+    ImplantAnimationClient.play(p);
+  }
 }
