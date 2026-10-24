@@ -34,4 +34,4 @@ GameTests run on a real NeoForge server with GeckoLib installed. Normal upstream
 
 ## Branches
 
-Publish development commits to `indev`; `main` remains the stable branch. Do not force-push or publish unverified changes. Keep the README short; put implementation and extension details in these guides.
+Develop new NeoForge features on `neoforge/1.21.1-indev`; this `neoforge/1.21.1` branch retains the reviewed baseline. The original `main` and `indev` branches remain unchanged. Do not force-push or publish unverified changes. Keep the README short; put implementation and extension details in these guides.

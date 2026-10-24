@@ -2,7 +2,7 @@
 
 Cyberpunk-inspired cyberware and netrunning for **Minecraft 1.21.1 / NeoForge**.
 
-**Version:** 0.3.0 · **Development:** `indev` · **Author:** Ian
+**Version:** 0.3.0 · **Stable:** `neoforge/1.21.1` · **Authors:** Ian and Xmilon
 
 ## Requirements
 
@@ -50,3 +50,7 @@ Gradle resolves GeckoLib automatically; third-party jars do not belong in this r
 [Gameplay](docs/gameplay.md) · [Extend slots and implants](docs/extending.md) · [Development and tests](docs/development.md) · [Changes and fixes](docs/changelog.md)
 
 License: **All Rights Reserved**.
+
+Development: `neoforge/1.21.1-indev`. This branch retains the 0.3.0 gameplay baseline pending visual acceptance of newer builds.
+
+[Future energy and fluids](docs/integrations.md) · [Contributors](CONTRIBUTORS.md)
