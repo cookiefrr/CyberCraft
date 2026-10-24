@@ -2,7 +2,7 @@
 
 Cyberpunk-inspired cyberware and netrunning for **Minecraft 1.21.1 / NeoForge**.
 
-**Version:** 0.3.0 · **Development:** `indev` · **Author:** Ian
+**Version:** 0.3.1 · **Development:** `neoforge/1.21.1-indev` · **Authors:** Ian and Xmilon
 
 ## Requirements
 
@@ -44,9 +44,12 @@ Neural Link opens cyberware, installs from the other hand, or activates the OS w
 ./gradlew build runGameTestServer
 ```
 
-Output: `build/libs/cybercraft-0.3.0.jar`. Windows users can use `gradlew.bat`.
+Output: `build/libs/cybercraft-neoforge-1.21.1-0.3.1.jar`. Windows users can use `gradlew.bat`.
 Gradle resolves GeckoLib automatically; third-party jars do not belong in this repository.
 
-[Gameplay](docs/gameplay.md) · [Extend slots and implants](docs/extending.md) · [Development and tests](docs/development.md) · [Changes and fixes](docs/changelog.md)
+[Gameplay](docs/gameplay.md) · [Extend slots and implants](docs/extending.md) · [Development and tests](docs/development.md) · [Changes and fixes](docs/changelog.md) · [Future energy and fluids](docs/integrations.md) · [Contributors](CONTRIBUTORS.md)
+
+Stable: `neoforge/1.21.1`. Fabric: `fabric/1.21.1` and `fabric/1.21.1-indev`.
+Energy/fluid machinery is planned; NeoForge's native APIs will provide integration. No additional energy/fluid API mod is required.
 
 License: **All Rights Reserved**.

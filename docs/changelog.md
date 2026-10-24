@@ -27,4 +27,4 @@ Visual acceptance is performed by the user. Dedicated-server and data tests do n
 
 ## Previous releases
 
-0.2.2 was the Fabric 1.21.1 release with scanner targeting, outlines, and the original standalone cyberware screen. The native rewrite is developed on `indev`; stable `main` is unchanged.
+0.2.2 was the Fabric 1.21.1 release with scanner targeting, outlines, and the original standalone cyberware screen. Development now uses loader/version branches. The original `main` and `indev` remain unchanged.

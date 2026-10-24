@@ -34,4 +34,4 @@ GameTests run on a real NeoForge server with GeckoLib installed. Normal upstream
 
 ## Branches
 
-Publish development commits to `indev`; `main` remains the stable branch. Do not force-push or publish unverified changes. Keep the README short; put implementation and extension details in these guides.
+Publish NeoForge development commits to `neoforge/1.21.1-indev` and Fabric development commits to `fabric/1.21.1-indev`. Their corresponding stable branches are `neoforge/1.21.1` and `fabric/1.21.1`. Promote gameplay changes only after the user's visual acceptance. The original `main` and `indev` branches remain historical baselines. Do not force-push or publish unverified changes.
