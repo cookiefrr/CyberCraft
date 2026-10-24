@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:handle_wrap",
+  "capacity": 3.0,
+  "item": "cybercraft:handle_wrap",
+  "model": "cybercraft:handle_wrap",
+  "slots": [
+    "cybercraft:hands"
+  ],
+  "tier": 1
+}

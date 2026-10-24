@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:optical_camo",
+  "capacity": 7.0,
+  "item": "cybercraft:optical_camo",
+  "model": "cybercraft:optical_camo",
+  "slots": [
+    "cybercraft:integumentary"
+  ],
+  "tier": 3
+}

@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:dense_marrow",
+  "capacity": 6.0,
+  "item": "cybercraft:dense_marrow",
+  "model": "cybercraft:dense_marrow",
+  "slots": [
+    "cybercraft:skeleton"
+  ],
+  "tier": 2
+}

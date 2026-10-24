@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "cybercraft:item/ex_disk_ram_upgrade"
+  }
+}

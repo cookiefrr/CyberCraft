@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "minecraft:iron_ingot"
+    },
+    "F": {
+      "item": "minecraft:copper_ingot"
+    },
+    "G": {
+      "item": "minecraft:iron_ingot"
+    },
+    "H": {
+      "item": "minecraft:copper_ingot"
+    }
+  },
+  "pattern": [
+    "G G",
+    "HEH",
+    " F "
+  ],
+  "result": {
+    "count": 1,
+    "id": "cybercraft:spring_joints"
+  }
+}

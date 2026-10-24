@@ -1,36 +1,79 @@
 plugins {
     id 'fabric-loom' version "${loom_version}"
-    id 'maven-publish'
 }
-
 version = project.mod_version
 group = project.maven_group
-
-base {
-    archivesName = project.archives_base_name
+base { archivesName = project.archives_base_name }
+repositories {
+    mavenCentral()
+    maven { url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
 }
-
-dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-}
-
-processResources {
-    inputs.property "version", project.version
-    filesMatching("fabric.mod.json") {
-        expand "version": inputs.properties.version
+sourceSets {
+    gametest {
+        compileClasspath += sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.runtimeClasspath
     }
 }
-
+configurations {
+    gametestImplementation.extendsFrom implementation
+    gametestRuntimeOnly.extendsFrom runtimeOnly
+}
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    def localGecko = file("src/mods/geckolib-fabric-${minecraft_version}-${geckolib_version}.jar")
+    modImplementation localGecko.exists() ? files(localGecko) : "software.bernie.geckolib:geckolib-fabric-${minecraft_version}:${geckolib_version}"
+    gametestImplementation sourceSets.main.output
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+loom {
+    accessWidenerPath = file('src/main/resources/cybercraft.accesswidener')
+    mods {
+        cybercraft { sourceSet sourceSets.main }
+        cybercraft_tests { sourceSet sourceSets.gametest }
+    }
+    runs {
+        clientSmoke {
+            inherit client
+            source sourceSets.gametest
+            name 'Client Model Smoke Test'
+            vmArg '-Dcybercraft.clientSmoke=true'
+            runDir 'run-client-test'
+        }
+        data {
+            inherit server
+            name 'Data Generation'
+            vmArg '-Dfabric-api.datagen'
+            vmArg '-Dfabric-api.datagen.modid=cybercraft'
+            vmArg "-Dfabric-api.datagen.output-dir=${file('src/generated/resources')}"
+            runDir 'run-data'
+        }
+        gameTestServer {
+            inherit server
+            source sourceSets.gametest
+            name 'GameTest Server'
+            vmArg '-Dfabric-api.gametest'
+            vmArg '-Dfabric-api.gametest.report-file=reports/gametest-results.xml'
+            runDir 'run-gametest'
+        }
+    }
+}
+sourceSets.main.resources.srcDir 'src/generated/resources'
+sourceSets.main.resources.exclude '**/.cache/**'
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('fabric.mod.json') { expand(version: project.version) }
+}
+test {
+    useJUnitPlatform()
+    systemProperty 'cybercraft.projectDir', projectDir.absolutePath
+}
 tasks.withType(JavaCompile).configureEach {
-    it.options.release = 21
-    it.options.encoding = "UTF-8"
+    options.release = 21
+    options.encoding = 'UTF-8'
 }
-
-java {
-    withSourcesJar()
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
-}
+java { withSourcesJar(); toolchain.languageVersion = JavaLanguageVersion.of(21) }

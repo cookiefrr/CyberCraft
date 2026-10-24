@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "minecraft:iron_ingot"
+    },
+    "G": {
+      "item": "minecraft:iron_ingot"
+    },
+    "S": {
+      "item": "cybercraft:servo_motor"
+    }
+  },
+  "pattern": [
+    "G G",
+    " E ",
+    " S "
+  ],
+  "result": {
+    "count": 1,
+    "id": "cybercraft:lynx_paws"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:cyber_legs",
+  "capacity": 6.0,
+  "item": "cybercraft:cyber_legs",
+  "model": "cybercraft:cyber_legs",
+  "slots": [
+    "cybercraft:legs"
+  ],
+  "tier": 1
+}

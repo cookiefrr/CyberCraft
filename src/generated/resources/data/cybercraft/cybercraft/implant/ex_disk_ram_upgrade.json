@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:ex_disk_ram_upgrade",
+  "capacity": 6.0,
+  "item": "cybercraft:ex_disk_ram_upgrade",
+  "model": "cybercraft:ex_disk_ram_upgrade",
+  "slots": [
+    "cybercraft:frontal_cortex"
+  ],
+  "tier": 3
+}

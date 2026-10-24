@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:microgenerator",
+  "capacity": 6.0,
+  "item": "cybercraft:microgenerator",
+  "model": "cybercraft:microgenerator",
+  "slots": [
+    "cybercraft:hands"
+  ],
+  "tier": 2
+}

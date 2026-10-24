@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:syn_lungs_bioplastic",
+  "capacity": 4.0,
+  "item": "cybercraft:syn_lungs_bioplastic",
+  "model": "cybercraft:syn_lungs_bioplastic",
+  "slots": [
+    "cybercraft:circulatory"
+  ],
+  "tier": 2
+}

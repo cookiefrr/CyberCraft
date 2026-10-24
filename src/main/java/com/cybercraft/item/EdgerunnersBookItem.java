@@ -9,19 +9,18 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-/** Edgerunner's Book: tasto destro per aprire il manuale illustrato. */
 public class EdgerunnersBookItem extends Item {
 
-    public EdgerunnersBookItem(Properties properties) {
-        super(properties);
-    }
+  public EdgerunnersBookItem(Properties properties) {
+    super(properties);
+  }
 
-    @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
-        if (player instanceof ServerPlayer serverPlayer) {
-            OpenBookPayload.send(serverPlayer);
-        }
-        return InteractionResultHolder.success(stack);
+  @Override
+  public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    ItemStack stack = player.getItemInHand(hand);
+    if (player instanceof ServerPlayer serverPlayer) {
+      OpenBookPayload.send(serverPlayer);
     }
+    return InteractionResultHolder.success(stack);
+  }
 }

@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:reinforced_tendons",
+  "capacity": 6.0,
+  "item": "cybercraft:reinforced_tendons",
+  "model": "cybercraft:reinforced_tendons",
+  "slots": [
+    "cybercraft:legs"
+  ],
+  "tier": 2
+}

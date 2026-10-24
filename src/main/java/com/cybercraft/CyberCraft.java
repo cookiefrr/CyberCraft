@@ -1,103 +1,118 @@
 package com.cybercraft;
 
-import com.cybercraft.cyberware.CyberwareManager;
-import com.cybercraft.cyberware.DoubleJumpHandler;
-import com.cybercraft.cyberware.ImplantEffects;
-import com.cybercraft.cyberware.SandevistanManager;
-import com.cybercraft.netrunning.NetrunnerManager;
-import com.cybercraft.network.ModNetworking;
-import com.cybercraft.registry.ModAttachments;
-import com.cybercraft.registry.ModBlocks;
-import com.cybercraft.registry.ModCreativeTabs;
-import com.cybercraft.registry.ModItems;
-import com.cybercraft.registry.ModWorldGen;
+import com.cybercraft.cyberware.*;
+import com.cybercraft.equipment.EquipmentRegistry;
+import com.cybercraft.mob.MobProgression;
+import com.cybercraft.network.*;
+import com.cybercraft.registry.*;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.resources.ResourceLocation;
+import net.fabricmc.fabric.api.biome.v1.*;
+import net.fabricmc.fabric.api.entity.event.v1.*;
+import net.fabricmc.fabric.api.event.lifecycle.v1.*;
+import net.fabricmc.fabric.api.networking.v1.*;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.*;
 import net.minecraft.server.level.ServerPlayer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.level.levelgen.GenerationStep;
+import org.slf4j.*;
 
-/**
- * Entry point della mod CyberCraft (lato comune: client e server).
- * Registra contenuti ed eventi. Tutta la logica di gioco vive sul server.
- */
-public class CyberCraft implements ModInitializer {
+public final class CyberCraft implements ModInitializer {
+  public static final String MOD_ID = "cybercraft";
+  public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    public static final String MOD_ID = "cybercraft";
-    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+  public static ResourceLocation id(String path) {
+    return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+  }
 
-    /** Crea un ResourceLocation nel namespace della mod. */
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
-    }
-
-    @Override
-    public void onInitialize() {
-        // L'ordine conta: gli attachment servono prima di tutto il resto.
-        ModAttachments.init();
-        ModNetworking.init(); // canali C2S/S2C per keybind, scanner e sincronizzazione
-        ModItems.init();
-        ModBlocks.init();
-        ModWorldGen.init(); // dopo i blocchi: i minerali devono esistere
-        ModCreativeTabs.init(); // dopo item e blocchi perché li elenca
-
-        ServerTickEvents.END_SERVER_TICK.register(server -> {
-            // Ogni tick: reset del doppio salto e mantenimento del rallentamento Sandevistan.
-            DoubleJumpHandler.tick(server);
-            SandevistanManager.tick(server);
-
-            // Una volta al secondo: rigenerazione, drain passivo, effetti impianti e sync client.
-            if (server.getTickCount() % 20 != 0) {
-                return;
-            }
-            for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-                CyberwareManager.tick(player);
-            }
+  public void onInitialize() {
+    ModAttachments.init();
+    OwnedEffects.init();
+    ModItems.init();
+    ModBlocks.init();
+    ModMenus.init();
+    ModCreativeTabs.init();
+    EquipmentRegistry.register();
+    ModNetworking.init();
+    for (String metal : new String[] {"titanium", "neodymium", "lithium"})
+      BiomeModifications.addFeature(
+          BiomeSelectors.foundInOverworld(),
+          GenerationStep.Decoration.UNDERGROUND_ORES,
+          ResourceKey.create(Registries.PLACED_FEATURE, id(metal + "_ore")));
+    ServerLifecycleEvents.SERVER_STARTED.register(
+        server -> {
+          MobProgression.load(server);
+          EquipmentRegistry.validate(server.overworld());
         });
-
-        // Evita che gli stati temporanei sopravvivano al cambio di mondo in singleplayer.
-        ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
-            DoubleJumpHandler.clear();
-            SandevistanManager.clear();
-            ImplantEffects.clear();
-            NetrunnerManager.clear();
+    ServerLifecycleEvents.SERVER_STOPPED.register(
+        server -> {
+          DoubleJumpHandler.clear();
+          SandevistanManager.clear();
+          ImplantEffects.clear();
+          MantisBladeManager.clear();
         });
-
-        // Danno subito dal giocatore: Biomonitor, Adrenalina, Shock-n-Awe.
-        ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damageTaken, blocked) -> {
-            if (blocked || damageTaken <= 0.0f) {
-                return;
-            }
-            if (entity instanceof ServerPlayer player) {
-                CyberwareManager.onDamaged(player, source);
-            }
-            // Lame da Mantide / Gorilla / Microgeneratore sul colpo in mischia.
-            if (source.getEntity() instanceof ServerPlayer player
-                    && source.getDirectEntity() == player) {
-                CyberwareManager.onMeleeAttack(player, entity);
-            }
+    ServerTickEvents.END_SERVER_TICK.register(
+        server -> {
+          DoubleJumpHandler.tick(server);
+          SandevistanManager.tick(server);
+          for (var level : server.getAllLevels()) com.cybercraft.netrunning.BlockHacks.tick(level);
         });
-
-        // Guarigione al kill (Heal-On-Kill).
-        ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
-            if (source.getEntity() instanceof ServerPlayer player) {
-                CyberwareManager.onKill(player, entity);
-            }
+    ServerEntityEvents.ENTITY_LOAD.register(
+        (e, level) -> {
+          if (e instanceof Mob mob) MobProgression.join(mob);
         });
-
-        // Secondo Cuore: annulla la morte e riporta il giocatore in piedi.
-        ServerPlayerEvents.ALLOW_DEATH.register((player, source, amount) -> CyberwareManager.allowDeath(player));
-
-        // Dopo la respawn gli attributi transient vanno riapplicati e il client risincronizzato.
-        ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
-            CyberwareManager.sendSync(newPlayer);
-            ImplantEffects.tick(newPlayer, CyberwareManager.get(newPlayer));
+    ServerEntityEvents.ENTITY_UNLOAD.register((e, level) -> DoubleJumpHandler.forget(e));
+    ServerLivingEntityEvents.AFTER_DAMAGE.register(
+        (e, source, base, taken, blocked) -> {
+          if (blocked || taken <= 0) return;
+          if (e.hasAttached(ModAttachments.CYBERWARE)) CyberwareManager.onDamaged(e, source);
+          if (source.getEntity() instanceof LivingEntity attacker
+              && source.getDirectEntity() == attacker
+              && (source.is(net.minecraft.world.damagesource.DamageTypes.PLAYER_ATTACK)
+                  || source.is(net.minecraft.world.damagesource.DamageTypes.MOB_ATTACK)))
+            ImplantEffects.onMeleeHit(attacker, e);
         });
+    ServerLivingEntityEvents.ALLOW_DEATH.register(
+        (e, source, amount) ->
+            !e.hasAttached(ModAttachments.CYBERWARE) || CyberwareManager.allowDeath(e));
+    ServerLivingEntityEvents.AFTER_DEATH.register(
+        (e, source) -> {
+          MantisBladeManager.reset(e);
+          if (source.getEntity() instanceof LivingEntity attacker)
+            CyberwareManager.onKill(attacker, e);
+        });
+    ServerPlayConnectionEvents.DISCONNECT.register(
+        (handler, server) -> MantisBladeManager.reset(handler.player));
+    ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> sync(handler.player));
+    ServerPlayerEvents.COPY_FROM.register(
+        (old, p, alive) -> CyberwareManager.set(p, CyberwareManager.get(old)));
+    ServerPlayerEvents.AFTER_RESPAWN.register((old, p, alive) -> sync(p));
+    ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((p, from, to) -> sync(p));
+    EntityTrackingEvents.START_TRACKING.register(
+        (e, p) -> {
+          if (e instanceof LivingEntity living)
+            ServerPlayNetworking.send(
+                p, new CyberwareSyncPayload(e.getId(), CyberwareManager.get(living)));
+          if (e instanceof net.minecraft.world.entity.player.Player living
+              && MantisBladeManager.extended(living))
+            ServerPlayNetworking.send(p, new MantisBladeStatePayload(e.getId(), true, false));
+        });
+    LOGGER.info("CyberCraft loaded on Fabric.");
+  }
 
-        LOGGER.info("CyberCraft caricato. Benvenuto a Night City.");
-    }
+  public static void tickEntity(LivingEntity e) {
+    if (e.level().isClientSide
+        || !(e instanceof ServerPlayer)
+            && (!e.hasAttached(ModAttachments.CYBERWARE)
+                || CyberwareManager.get(e).equipment().isEmpty())) return;
+    OwnedEffects.reconcile(e);
+    if (e.tickCount % 20 == 0) CyberwareManager.tick(e);
+  }
+
+  private static void sync(ServerPlayer p) {
+    CyberwareManager.reconcile(p);
+    SandevistanManager.track(p);
+    CyberwareManager.sendSync(p);
+    ImplantEffects.reconcile(p);
+  }
 }

@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:reflex_synaptic_accelerator",
+  "capacity": 7.0,
+  "item": "cybercraft:reflex_synaptic_accelerator",
+  "model": "cybercraft:reflex_synaptic_accelerator",
+  "slots": [
+    "cybercraft:nervous"
+  ],
+  "tier": 3
+}

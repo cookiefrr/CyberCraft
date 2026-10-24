@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:chrome_compressor",
+  "capacity": 10.0,
+  "item": "cybercraft:chrome_compressor",
+  "model": "cybercraft:chrome_compressor",
+  "slots": [
+    "cybercraft:operating_system"
+  ],
+  "tier": 3
+}

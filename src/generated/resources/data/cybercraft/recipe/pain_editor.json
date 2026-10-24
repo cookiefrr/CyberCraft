@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "tag": "c:ingots/titanium"
+    },
+    "F": {
+      "item": "minecraft:gold_ingot"
+    },
+    "G": {
+      "tag": "c:ingots/titanium"
+    }
+  },
+  "pattern": [
+    "G G",
+    " E ",
+    " F "
+  ],
+  "result": {
+    "count": 1,
+    "id": "cybercraft:pain_editor"
+  }
+}

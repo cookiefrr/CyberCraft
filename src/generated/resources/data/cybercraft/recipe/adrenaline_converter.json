@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "cybercraft:circuit_board"
+    },
+    "E": {
+      "tag": "c:ingots/titanium"
+    },
+    "F": {
+      "item": "minecraft:gold_ingot"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    "CRC",
+    " E ",
+    " F "
+  ],
+  "result": {
+    "count": 1,
+    "id": "cybercraft:adrenaline_converter"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:sandevistan",
+  "capacity": 12.0,
+  "item": "cybercraft:sandevistan",
+  "model": "cybercraft:sandevistan",
+  "slots": [
+    "cybercraft:operating_system"
+  ],
+  "tier": 3
+}

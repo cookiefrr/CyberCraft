@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:kiroshi_optics",
+  "capacity": 5.0,
+  "item": "cybercraft:kiroshi_optics",
+  "model": "cybercraft:kiroshi_optics",
+  "slots": [
+    "cybercraft:ocular"
+  ],
+  "tier": 2
+}

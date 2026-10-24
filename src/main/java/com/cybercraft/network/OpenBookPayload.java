@@ -7,20 +7,19 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 
-/** Apre l'Edgerunner's Book sul client. */
 public record OpenBookPayload() implements CustomPacketPayload {
 
-    public static final Type<OpenBookPayload> TYPE = new Type<>(CyberCraft.id("open_book"));
+  public static final Type<OpenBookPayload> TYPE = new Type<>(CyberCraft.id("open_book"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, OpenBookPayload> CODEC =
-            StreamCodec.unit(new OpenBookPayload());
+  public static final StreamCodec<RegistryFriendlyByteBuf, OpenBookPayload> CODEC =
+      StreamCodec.unit(new OpenBookPayload());
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+  @Override
+  public Type<? extends CustomPacketPayload> type() {
+    return TYPE;
+  }
 
-    public static void send(ServerPlayer player) {
-        ServerPlayNetworking.send(player, new OpenBookPayload());
-    }
+  public static void send(ServerPlayer player) {
+    ServerPlayNetworking.send(player, new OpenBookPayload());
+  }
 }

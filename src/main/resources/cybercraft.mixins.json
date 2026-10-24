@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.cybercraft.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "SignalMixin",
+    "BlockSignalMixin",
+    "WireSignalMixin",
+    "LivingCyberwareMixin",
+    "MobSpawnMixin"
+  ],
+  "client": [
+    "client.ScannerGlowMixin",
+    "client.ScannerColorMixin",
+    "client.ItemContextMixin",
+    "client.PlayerArmMixin",
+    "client.ImplantTooltipMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

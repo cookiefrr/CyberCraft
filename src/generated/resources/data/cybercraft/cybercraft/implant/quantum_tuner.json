@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:quantum_tuner",
+  "capacity": 6.0,
+  "item": "cybercraft:quantum_tuner",
+  "model": "cybercraft:quantum_tuner",
+  "slots": [
+    "cybercraft:frontal_cortex"
+  ],
+  "tier": 3
+}

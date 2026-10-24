@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:biomonitor",
+  "capacity": 6.0,
+  "item": "cybercraft:biomonitor",
+  "model": "cybercraft:biomonitor",
+  "slots": [
+    "cybercraft:circulatory"
+  ],
+  "tier": 2
+}

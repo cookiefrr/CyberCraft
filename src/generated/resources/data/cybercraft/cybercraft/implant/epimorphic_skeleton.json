@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:epimorphic_skeleton",
+  "capacity": 8.0,
+  "item": "cybercraft:epimorphic_skeleton",
+  "model": "cybercraft:epimorphic_skeleton",
+  "slots": [
+    "cybercraft:skeleton"
+  ],
+  "tier": 3
+}

@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:titanium_bones",
+  "capacity": 6.0,
+  "item": "cybercraft:titanium_bones",
+  "model": "cybercraft:titanium_bones",
+  "slots": [
+    "cybercraft:skeleton"
+  ],
+  "tier": 2
+}

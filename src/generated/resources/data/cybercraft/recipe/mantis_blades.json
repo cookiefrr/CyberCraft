@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "tag": "c:ingots/titanium"
+    },
+    "F": {
+      "item": "minecraft:gold_ingot"
+    },
+    "G": {
+      "tag": "c:ingots/titanium"
+    },
+    "S": {
+      "item": "cybercraft:servo_motor"
+    }
+  },
+  "pattern": [
+    "G G",
+    " E ",
+    "SFS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cybercraft:mantis_blades"
+  }
+}

@@ -3,18 +3,37 @@
   "id": "cybercraft",
   "version": "${version}",
   "name": "CyberCraft",
-  "description": "Mod a tema Cyberpunk 2077: cyberware, netrunning, armi futuristiche e blocchi neon.",
-  "authors": ["Ian"],
+  "description": "Cyberware, netrunning and neon technology for Minecraft.",
+  "authors": [
+    "Ian",
+    "Xmilon"
+  ],
+  "contributors": [
+    "Ian",
+    "Xmilon"
+  ],
   "license": "All-Rights-Reserved",
   "environment": "*",
   "entrypoints": {
-    "main": ["com.cybercraft.CyberCraft"],
-    "client": ["com.cybercraft.client.CyberCraftClient"]
+    "main": [
+      "com.cybercraft.CyberCraft"
+    ],
+    "client": [
+      "com.cybercraft.client.CyberCraftClient"
+    ],
+    "fabric-datagen": [
+      "com.cybercraft.data.DataGenerators"
+    ]
   },
+  "mixins": [
+    "cybercraft.mixins.json"
+  ],
+  "accessWidener": "cybercraft.accesswidener",
   "depends": {
-    "fabricloader": ">=0.16.9",
+    "fabricloader": ">=0.20.1",
     "minecraft": "~1.21.1",
     "java": ">=21",
-    "fabric-api": "*"
+    "fabric-api": ">=0.116.17+1.21.1",
+    "geckolib": ">=4.9.3 <5"
   }
 }

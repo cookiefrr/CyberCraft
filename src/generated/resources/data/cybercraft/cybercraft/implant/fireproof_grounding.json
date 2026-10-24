@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:fireproof_grounding",
+  "capacity": 5.0,
+  "item": "cybercraft:fireproof_grounding",
+  "model": "cybercraft:fireproof_grounding",
+  "slots": [
+    "cybercraft:integumentary"
+  ],
+  "tier": 2
+}

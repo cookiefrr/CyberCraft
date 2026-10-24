@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:smart_link",
+  "capacity": 5.0,
+  "item": "cybercraft:smart_link",
+  "model": "cybercraft:smart_link",
+  "slots": [
+    "cybercraft:hands"
+  ],
+  "tier": 2
+}

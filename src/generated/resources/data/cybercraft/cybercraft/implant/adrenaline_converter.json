@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:adrenaline_converter",
+  "capacity": 5.0,
+  "item": "cybercraft:adrenaline_converter",
+  "model": "cybercraft:adrenaline_converter",
+  "slots": [
+    "cybercraft:nervous"
+  ],
+  "tier": 2
+}

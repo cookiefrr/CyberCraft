@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:mantis_blades",
+  "capacity": 8.0,
+  "item": "cybercraft:mantis_blades",
+  "model": "cybercraft:mantis_blades",
+  "slots": [
+    "cybercraft:arms"
+  ],
+  "tier": 2
+}

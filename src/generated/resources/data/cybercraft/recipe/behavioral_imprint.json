@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": {
+      "item": "cybercraft:optics_lens"
+    },
+    "E": {
+      "tag": "c:ingots/titanium"
+    },
+    "F": {
+      "item": "minecraft:gold_ingot"
+    },
+    "L": {
+      "item": "minecraft:glass"
+    }
+  },
+  "pattern": [
+    " D ",
+    "LEL",
+    " F "
+  ],
+  "result": {
+    "count": 1,
+    "id": "cybercraft:behavioral_imprint"
+  }
+}

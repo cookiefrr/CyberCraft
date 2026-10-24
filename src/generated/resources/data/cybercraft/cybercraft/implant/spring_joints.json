@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:spring_joints",
+  "capacity": 5.0,
+  "item": "cybercraft:spring_joints",
+  "model": "cybercraft:spring_joints",
+  "slots": [
+    "cybercraft:skeleton"
+  ],
+  "tier": 1
+}

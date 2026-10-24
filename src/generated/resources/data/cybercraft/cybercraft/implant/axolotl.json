@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:axolotl",
+  "capacity": 5.0,
+  "item": "cybercraft:axolotl",
+  "model": "cybercraft:axolotl",
+  "slots": [
+    "cybercraft:frontal_cortex"
+  ],
+  "tier": 2
+}

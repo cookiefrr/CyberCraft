@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "cybercraft_tests",
+  "version": "1",
+  "name": "CyberCraft Tests",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": [
+      "com.cybercraft.test.CyberCraftTests",
+      "com.cybercraft.test.DisruptionPersistenceTests"
+    ],
+    "client": [
+      "com.cybercraft.test.ClientModelSmoke"
+    ]
+  }
+}

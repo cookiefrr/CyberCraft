@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:self_ice",
+  "capacity": 4.0,
+  "item": "cybercraft:self_ice",
+  "model": "cybercraft:self_ice",
+  "slots": [
+    "cybercraft:frontal_cortex"
+  ],
+  "tier": 2
+}

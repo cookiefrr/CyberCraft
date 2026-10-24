@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "cybercraft:neodymium_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "cybercraft:neodymium_ingot"
+  }
+}

@@ -1,29 +1,23 @@
 package com.cybercraft.network;
 
 import com.cybercraft.CyberCraft;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceLocation;
 
-/**
- * Il client chiede di eseguire un Quickhack sull'indice indicato (scanner HUD).
- * {@code targetId} è l'entità sotto il mirino: il server la rivalida prima di applicare l'effetto.
- */
-public record CastHackPayload(int hackIndex, int targetId) implements CustomPacketPayload {
+public record CastHackPayload(ResourceLocation hack, HackTarget target)
+    implements CustomPacketPayload {
+  public static final Type<CastHackPayload> TYPE = new Type<>(CyberCraft.id("cast_hack"));
+  public static final StreamCodec<RegistryFriendlyByteBuf, CastHackPayload> CODEC =
+      StreamCodec.of(
+          (b, p) -> {
+            b.writeResourceLocation(p.hack());
+            HackTarget.write(b, p.target());
+          },
+          b -> new CastHackPayload(b.readResourceLocation(), HackTarget.read(b)));
 
-    public static final Type<CastHackPayload> TYPE = new Type<>(CyberCraft.id("cast_hack"));
-
-    public static final StreamCodec<RegistryFriendlyByteBuf, CastHackPayload> CODEC = StreamCodec.of(
-            (buf, payload) -> {
-                buf.writeVarInt(payload.hackIndex);
-                buf.writeVarInt(payload.targetId);
-            },
-            buf -> new CastHackPayload(buf.readVarInt(), buf.readVarInt()));
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+  public Type<? extends CustomPacketPayload> type() {
+    return TYPE;
+  }
 }

@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:ballistic_coprocessor",
+  "capacity": 5.0,
+  "item": "cybercraft:ballistic_coprocessor",
+  "model": "cybercraft:ballistic_coprocessor",
+  "slots": [
+    "cybercraft:hands"
+  ],
+  "tier": 2
+}

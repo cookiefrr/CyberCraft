@@ -4,18 +4,16 @@ import com.cybercraft.CyberCraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 
-/** Navigazione della lista Quickhack: +1 successivo, -1 precedente. */
-public record SelectHackPayload(int delta) implements CustomPacketPayload {
+public record SelectHackPayload(ResourceLocation hack) implements CustomPacketPayload {
+  public static final Type<SelectHackPayload> TYPE = new Type<>(CyberCraft.id("select_hack"));
+  public static final StreamCodec<RegistryFriendlyByteBuf, SelectHackPayload> CODEC =
+      StreamCodec.of(
+          (b, p) -> b.writeResourceLocation(p.hack()),
+          b -> new SelectHackPayload(b.readResourceLocation()));
 
-    public static final Type<SelectHackPayload> TYPE = new Type<>(CyberCraft.id("select_hack"));
-
-    public static final StreamCodec<RegistryFriendlyByteBuf, SelectHackPayload> CODEC = StreamCodec.of(
-            (buf, payload) -> buf.writeVarInt(payload.delta),
-            buf -> new SelectHackPayload(buf.readVarInt()));
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+  public Type<? extends CustomPacketPayload> type() {
+    return TYPE;
+  }
 }

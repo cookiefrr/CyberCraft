@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:second_heart",
+  "capacity": 10.0,
+  "item": "cybercraft:second_heart",
+  "model": "cybercraft:second_heart",
+  "slots": [
+    "cybercraft:circulatory"
+  ],
+  "tier": 3
+}
