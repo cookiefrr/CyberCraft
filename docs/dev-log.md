@@ -22,6 +22,9 @@ Registro cronologico degli interventi. Ogni voce indica data, obiettivo, modific
 - Controllo dei file staged: nessun jar di build, nessun log, nessun segreto; unico jar presente è il wrapper Gradle.
 
 **Stato**
-- Repository locale pronta; creazione remota, push e invito collaboratore in corso.
+- Repository pubblica attiva su https://github.com/cookiefrr/CyberCraft.
+- Commit iniziale `3d78e71` — *Add CyberCraft 0.2.1 source, README and docs* — pubblicato su `main` e `indev`.
+- Branch di lavoro corrente: `indev`; `main` resta la versione stabile.
+- Collaboratore `Xmilon` (xmilonn@gmail.com) invitato con permesso **write**; invito id `339470281`, creato il 2026-10-24 alle 11:17 UTC, in attesa di accettazione.
 
 <!-- Aggiornare questo file a ogni intervento: data, obiettivo, modifiche, verifiche, stato. -->

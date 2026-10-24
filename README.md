@@ -4,6 +4,12 @@ Mod per **Minecraft 1.21.1** su **Fabric** ispirata a Cyberpunk 2077. Aggiunge c
 
 **Versione:** `0.2.1` · **Branch stabile:** `main` · **Sviluppo:** `indev`
 
+**Repository:** https://github.com/cookiefrr/CyberCraft
+
+```bash
+git clone https://github.com/cookiefrr/CyberCraft.git
+```
+
 ---
 
 ## Caratteristiche
