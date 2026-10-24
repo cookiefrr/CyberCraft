@@ -1,6 +1,6 @@
 # Architettura
 
-Documento tecnico della versione `0.2.1` (Minecraft 1.21.1, Fabric, mapping Mojang ufficiali).
+Documento tecnico della versione `0.2.2` (Minecraft 1.21.1, Fabric, mapping Mojang ufficiali).
 
 ## Stack
 
@@ -23,8 +23,9 @@ com.cybercraft
 │   ├── ClientCyberwareState.java cache dello stato cyberware
 │   ├── CyberwareScreen.java     schermata Ripperdoc con REMOVE
 │   ├── EdgerunnersBookScreen.java manuale in-game
-│   ├── ScannerHud.java          overlay scanner e pannelli
-│   ├── ScannerState.java        bersaglio, upload, tempi di compilazione
+│   ├── ScannerHud.java          overlay scanner, raycast mirino e scheda statistiche
+│   ├── ScannerState.java        bersaglio, dissolvenza, upload, tempi di compilazione
+│   ├── EntityOutlineManager.java outline rosso client dei bersagli visibili
 │   └── SandevistanFx.java       scie particellari e overlay Sandevistan
 ├── cyberware/
 │   ├── Cyberware.java           catalogo dei 42 impianti
@@ -38,7 +39,9 @@ com.cybercraft
 │   └── ImplantForgeMenu.java    CraftingMenu con stillValid sul Banco Impianti
 ├── network/                     payload C2S/S2C e registrazione canali
 ├── netrunning/                  Cyberdeck, Quickhack, NetrunnerManager
-├── item/ block/ registry/ util/ contenuti e registri
+├── item/ block/ registry/ contenuti e registri
+└── util/
+    └── Targeting.java           portata e validità dei bersagli condivise client/server
 ```
 
 ## Persistenza
@@ -89,7 +92,7 @@ Tutte le azioni sono validate lato server; i payload C2S sono intenzioni.
 |---|---|---|
 | `DoubleJumpPayload` | C2S | Richiesta doppio salto |
 | `SandevistanPayload` | C2S | Attivazione Sandevistan/Berserk |
-| `CastHackPayload` | C2S | Lancio quickhack |
+| `CastHackPayload` | C2S | Lancio quickhack su entità esplicita (indice hack + entity id) |
 | `SelectHackPayload` | C2S | Cambio quickhack (+1/−1) |
 | `RemoveImplantPayload` | C2S | Rimozione impianto per ordinale di slot |
 | `CyberwareSyncPayload` | S2C | Stato completo per HUD e schermata |
@@ -99,11 +102,15 @@ Tutte le azioni sono validate lato server; i payload C2S sono intenzioni.
 
 I receiver C2S girano su `context.server().execute(...)`, quindi la logica di gioco resta sul thread del server. Al join viene inviato subito uno stato sincronizzato.
 
+Per il cast, il client invia l'entity id sotto il mirino; `NetrunnerManager` verifica che l'entità esista, sia una `LivingEntity` valida, entro 64 blocchi, con linea di vista libera e colpita dal raycast del giocatore. Se la validazione fallisce l'hack è rifiutato. Il vecchio percorso senza id resta per l'attivazione tramite item, che usa il target calcolato dal server.
+
 ## Client
 
 - Le keybind sono registrate in `CyberCraftClient` e rimappabili nella categoria CyberCraft.
 - `ClientCyberwareState` mantiene l'ultimo `CyberwareData` ricevuto.
-- `ScannerHud` disegna scanner, reticolo, RAM, quickhack e pannello bersaglio tramite `HudRenderCallback`.
+- `ScannerHud` disegna scanner, reticolo, RAM, quickhack e scheda bersaglio tramite `HudRenderCallback`. Il bersaglio è ottenuto con `ProjectileUtil.getEntityHitResult` dagli occhi lungo lo sguardo, con portata `min(renderDistance × 16, 64)`; `ScannerState` conserva l'ultimo bersaglio per la dissolvenza di 120 ms.
+- `EntityOutlineManager` aggiorna ogni 5 tick le entità viventi visibili: filtro per distanza, cono FOV e linea di vista, massimo 48; applica un team client rosso e `setGlowingTag(true)`, ripristinando lo stato alla chiusura dello scanner o al cambio mondo.
+- Le entità non giocatore sono incluse nel team tramite `getScoreboardName()`, così il renderer vanilla usa colore e glow del team.
 - `SandevistanFx` emette particelle nel mondo e disegna l'overlay; è registrato prima dello scanner per restare sotto i pannelli.
 - `CyberwareScreen` è una `Screen` con layout responsivo e modalità compatta; invia `RemoveImplantPayload` al click su REMOVE.
 - Le schermate e l'HUD richiedono la mod anche lato client.

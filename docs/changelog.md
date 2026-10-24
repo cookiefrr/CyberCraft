@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.2.2 — 24 ottobre 2026
+
+**Novità**
+- Targeting quickhack dal mirino: qualsiasi `LivingEntity` in linea di vista, fino a `min(render distance × 16, 64)` blocchi; il server valida fino a 64.
+- Outline rosso sulle entità visibili nel campo visivo, con aggiornamento a 4 Hz e massimo 48 bersagli.
+- Scheda statistiche cyberpunk sotto il mirino: nome, tipo, fazione, salute, armatura/robustezza, effetti attivi, vulnerabilità e upload; dissolvenza di 120 ms quando il mirino si sposta.
+- Nuove chiavi lang EN/IT per fazione, tipo, stati e hint X/Z.
+- Documento di design `docs/quickhack-targeting.md`.
+
+**Correzioni**
+- Rimossa l'intercettazione della rotella del mouse: con lo scanner aperto la rotella torna a cambiare lo slot della hotbar.
+- `CastHackPayload` include l'entity id; il server verifica entità, distanza, linea di vista e mira prima di applicare l'hack.
+
+**Verifiche**
+- `gradlew build --offline` → `BUILD SUCCESSFUL`; jar `cybercraft-0.2.2.jar` 238.223 byte.
+- Server: `cybercraft 0.2.2`, `Done`, nessun errore.
+- Test grafico lato client (hotbar, outline non giocatore, fade, cast a distanza) ancora da eseguire in un mondo reale.
+
 ## 0.2.1 — 24 ottobre 2026
 
 **Correzioni**

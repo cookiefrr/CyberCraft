@@ -7,6 +7,7 @@ import com.cybercraft.network.CyberwareSyncPayload;
 import com.cybercraft.network.HackResultPayload;
 import com.cybercraft.registry.ModItems;
 import com.cybercraft.util.Combat;
+import com.cybercraft.util.Targeting;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -17,8 +18,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Logica condivisa del Cyberdeck: usata sia dal tasto destro dell'item
@@ -26,7 +32,7 @@ import net.minecraft.world.item.ItemStack;
  */
 public final class NetrunnerManager {
 
-    public static final double RANGE = 24.0;
+    public static final double RANGE = Targeting.MAX_RANGE;
     public static final double AIM_TOLERANCE = 0.985; // circa 10 gradi
     public static final int COOLDOWN_TICKS = 10;
 
@@ -59,6 +65,14 @@ public final class NetrunnerManager {
 
     /** Esegue un Quickhack. Restituisce il codice di esito usato dall'HUD. */
     public static int cast(ServerPlayer player, int index) {
+        return cast(player, index, -1);
+    }
+
+    /**
+     * Esegue un Quickhack sul bersaglio indicato dal client.
+     * Con {@code targetId < 0} il server cerca il bersaglio lungo la mira (percorso item).
+     */
+    public static int cast(ServerPlayer player, int index, int targetId) {
         CyberwareData data = CyberwareManager.get(player);
         if (!hasCyberdeck(player)) {
             return fail(player, 4, "msg.cybercraft.no_cyberdeck");
@@ -72,7 +86,9 @@ public final class NetrunnerManager {
         }
 
         Quickhack hack = Quickhack.byIndex(index);
-        Optional<LivingEntity> target = Combat.findTarget(player, RANGE, AIM_TOLERANCE);
+        Optional<LivingEntity> target = targetId >= 0
+                ? findExplicitTarget(player, targetId)
+                : Combat.findTarget(player, RANGE, AIM_TOLERANCE);
         if (target.isEmpty()) {
             return fail(player, 1, "msg.cybercraft.no_target");
         }
@@ -92,6 +108,32 @@ public final class NetrunnerManager {
         CyberwareSyncPayload.send(player, CyberwareManager.get(player));
         HackResultPayload.send(player, true, 0);
         return 0;
+    }
+
+    /**
+     * Rivalida il bersaglio inviato dal client: deve esistere, essere vivo,
+     * essere entro la portata, avere linea di vista libera ed essere quello
+     * effettivamente colpito dal raggio del mirino.
+     */
+    private static Optional<LivingEntity> findExplicitTarget(ServerPlayer player, int targetId) {
+        Entity entity = player.level().getEntity(targetId);
+        if (entity == null || !Targeting.isValidTarget(entity, player)) {
+            return Optional.empty();
+        }
+        LivingEntity living = (LivingEntity) entity;
+        if (player.distanceTo(living) > RANGE || !player.hasLineOfSight(living)) {
+            return Optional.empty();
+        }
+
+        Vec3 eye = player.getEyePosition();
+        Vec3 end = eye.add(player.getLookAngle().scale(RANGE));
+        AABB search = new AABB(eye, end).inflate(1.0);
+        EntityHitResult hit = ProjectileUtil.getEntityHitResult(player, eye, end, search,
+                candidate -> Targeting.isValidTarget(candidate, player), RANGE * RANGE);
+        if (hit == null || hit.getEntity() != living) {
+            return Optional.empty();
+        }
+        return Optional.of(living);
     }
 
     /** Cambia il Quickhack selezionato di delta posizioni. */

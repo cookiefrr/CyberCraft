@@ -10,6 +10,7 @@ Indice della documentazione pubblica del progetto. Questa cartella va aggiornata
 | [changelog.md](changelog.md) | Cronologia delle versioni |
 | [roadmap.md](roadmap.md) | Prossimi passi e idee |
 | [dev-log.md](dev-log.md) | Registro datato degli interventi |
+| [quickhack-targeting.md](quickhack-targeting.md) | Design del targeting quickhack, outline rosso e scheda statistiche |
 
 ## Regole di aggiornamento
 

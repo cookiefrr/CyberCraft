@@ -142,6 +142,16 @@
   "hud.cybercraft.scan.archetype.neutral": "NEUTRAL",
   "hud.cybercraft.scan.buffer.offline": "BUFFER OFFLINE",
   "hud.cybercraft.scan.buffer.online": "BUFFER STABLE",
+  "hud.cybercraft.scan.faction": "FACTION",
+  "hud.cybercraft.scan.faction.civilian": "CIVILIAN",
+  "hud.cybercraft.scan.faction.hostile": "HOSTILE",
+  "hud.cybercraft.scan.faction.neutral": "NEUTRAL",
+  "hud.cybercraft.scan.faction.passive": "PASSIVE",
+  "hud.cybercraft.scan.faction.player": "PLAYER",
+  "hud.cybercraft.scan.faction.tech": "TECH",
+  "hud.cybercraft.scan.status": "STATUS EFFECTS",
+  "hud.cybercraft.scan.status.none": "NONE",
+  "hud.cybercraft.scan.type": "TYPE",
   "hud.cybercraft.scan.hint.execute": "Execute Quickhack",
   "hud.cybercraft.scan.hint.exit": "Exit Scan",
   "hud.cybercraft.scan.hint.navigate": "Navigate List",
@@ -287,6 +297,5 @@
   "slot.cybercraft.skeleton": "skeleton",
   "tooltip.cybercraft.capacity": "Capacity: %s",
   "tooltip.cybercraft.slot": "Slot: %s",
-  "tooltip.cybercraft.tier": "Tier: %s / 3",
-  "hud.cybercraft.scan.hint.wheel": "Wheel"
+  "tooltip.cybercraft.tier": "Tier: %s / 3"
 }

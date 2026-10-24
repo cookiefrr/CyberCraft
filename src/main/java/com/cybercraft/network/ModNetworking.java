@@ -36,7 +36,7 @@ public final class ModNetworking {
                 context.server().execute(() -> SandevistanManager.activate(context.player())));
 
         ServerPlayNetworking.registerGlobalReceiver(CastHackPayload.TYPE, (payload, context) ->
-                context.server().execute(() -> NetrunnerManager.cast(context.player(), payload.hackIndex())));
+                context.server().execute(() -> NetrunnerManager.cast(context.player(), payload.hackIndex(), payload.targetId())));
 
         ServerPlayNetworking.registerGlobalReceiver(SelectHackPayload.TYPE, (payload, context) ->
                 context.server().execute(() -> NetrunnerManager.select(context.player(), payload.delta())));

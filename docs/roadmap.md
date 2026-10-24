@@ -2,8 +2,9 @@
 
 ## Priorità alta
 
-- [ ] Test gameplay completo lato client in un mondo: apertura Banco Impianti, REMOVE, schermata Cyberware, scanner, rotella, Sandevistan FX.
-- [ ] Installare `cybercraft-0.2.1.jar` nell'istanza Modrinth a gioco chiuso, rimuovendo la 0.2.0.
+- [ ] Test gameplay completo lato client in un mondo: apertura Banco Impianti, REMOVE, schermata Cyberware, scanner, rotella/hotbar, outline, scheda statistiche, Sandevistan FX.
+- [ ] Installare `cybercraft-0.2.2.jar` nell'istanza Modrinth a gioco chiuso, rimuovendo la 0.2.1.
+- [ ] Verificare in gioco che il team client rosso colori l'outline anche delle entità non giocatore; in caso contrario serve un renderer custom.
 - [ ] Verificare `copyOnDeath` con morte e respawn reali.
 - [ ] Ricalibrare i costi dei quickhack con RAM massima 100.
 

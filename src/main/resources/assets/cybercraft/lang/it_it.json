@@ -142,6 +142,16 @@
   "hud.cybercraft.scan.archetype.neutral": "NEUTRALE",
   "hud.cybercraft.scan.buffer.offline": "BUFFER OFFLINE",
   "hud.cybercraft.scan.buffer.online": "BUFFER STABILE",
+  "hud.cybercraft.scan.faction": "FAZIONE",
+  "hud.cybercraft.scan.faction.civilian": "CIVILE",
+  "hud.cybercraft.scan.faction.hostile": "OSTILE",
+  "hud.cybercraft.scan.faction.neutral": "NEUTRALE",
+  "hud.cybercraft.scan.faction.passive": "PASSIVO",
+  "hud.cybercraft.scan.faction.player": "GIOCATORE",
+  "hud.cybercraft.scan.faction.tech": "TECNOLOGIA",
+  "hud.cybercraft.scan.status": "EFFETTI ATTIVI",
+  "hud.cybercraft.scan.status.none": "NESSUNO",
+  "hud.cybercraft.scan.type": "TIPO",
   "hud.cybercraft.scan.hint.execute": "Esegui Quickhack",
   "hud.cybercraft.scan.hint.exit": "Esci da Scansione",
   "hud.cybercraft.scan.hint.navigate": "Naviga Lista",
@@ -287,6 +297,5 @@
   "slot.cybercraft.skeleton": "scheletro",
   "tooltip.cybercraft.capacity": "Capacità: %s",
   "tooltip.cybercraft.slot": "Slot: %s",
-  "tooltip.cybercraft.tier": "Livello: %s / 3",
-  "hud.cybercraft.scan.hint.wheel": "Rotella"
+  "tooltip.cybercraft.tier": "Livello: %s / 3"
 }
