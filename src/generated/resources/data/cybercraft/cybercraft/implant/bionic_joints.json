@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:bionic_joints",
+  "capacity": 6.0,
+  "item": "cybercraft:bionic_joints",
+  "model": "cybercraft:bionic_joints",
+  "slots": [
+    "cybercraft:skeleton"
+  ],
+  "tier": 2
+}

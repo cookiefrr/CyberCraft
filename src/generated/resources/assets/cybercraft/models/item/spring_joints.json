@@ -1,0 +1,12 @@
+{
+  "base": {
+    "parent": "cybercraft:item/spring_joints_3d"
+  },
+  "gui_light": "front",
+  "loader": "neoforge:separate_transforms",
+  "perspectives": {
+    "gui": {
+      "parent": "builtin/entity"
+    }
+  }
+}

@@ -2,27 +2,49 @@ package com.cybercraft.util;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.*;
 
-/** Regole condivise di targeting tra client e server. */
 public final class Targeting {
+  public static final double MAX_RANGE = 64;
 
-    /** Portata massima assoluta, indipendente dalla render distance del client. */
-    public static final double MAX_RANGE = 64.0;
+  public static double rangeForRenderDistance(int chunks) {
+    return Math.min(MAX_RANGE, Math.max(16, chunks * 16.0));
+  }
 
-    private Targeting() {}
+  public static boolean isValidTarget(Entity target, Entity viewer) {
+    return target instanceof LivingEntity living
+        && target != viewer
+        && living.isAlive()
+        && !living.isSpectator()
+        && !living.isRemoved()
+        && target.level() == viewer.level();
+  }
 
-    /** La portata segue la render distance, ma non supera {@link #MAX_RANGE}. */
-    public static double rangeForRenderDistance(int renderDistanceChunks) {
-        return Math.min(MAX_RANGE, Math.max(16.0, renderDistanceChunks * 16.0));
-    }
+  public static HitResult pick(LivingEntity viewer, double range) {
+    Vec3 eye = viewer.getEyePosition();
+    Vec3 end = eye.add(viewer.getLookAngle().scale(range));
+    BlockHitResult block =
+        viewer
+            .level()
+            .clip(
+                new ClipContext(
+                    eye, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, viewer));
+    double distance =
+        block.getType() == HitResult.Type.MISS
+            ? range * range
+            : eye.distanceToSqr(block.getLocation());
+    EntityHitResult entity =
+        ProjectileUtil.getEntityHitResult(
+            viewer,
+            eye,
+            end,
+            new AABB(eye, end).inflate(1),
+            e -> isValidTarget(e, viewer),
+            distance);
+    return entity == null ? block : entity;
+  }
 
-    /** Solo entità viventi, vive, non spettatrici e nello stesso livello dell'osservatore. */
-    public static boolean isValidTarget(Entity entity, Entity viewer) {
-        return entity instanceof LivingEntity living
-                && entity != viewer
-                && living.isAlive()
-                && !living.isSpectator()
-                && !living.isRemoved()
-                && entity.level() == viewer.level();
-    }
+  private Targeting() {}
 }

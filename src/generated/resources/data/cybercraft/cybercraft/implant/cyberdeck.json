@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:cyberdeck",
+  "capacity": 6.0,
+  "item": "cybercraft:cyberdeck",
+  "model": "cybercraft:cyberdeck",
+  "slots": [
+    "cybercraft:cyberdeck"
+  ],
+  "tier": 2
+}

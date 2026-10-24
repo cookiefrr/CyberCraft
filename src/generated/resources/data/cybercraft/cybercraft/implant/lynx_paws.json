@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:lynx_paws",
+  "capacity": 4.0,
+  "item": "cybercraft:lynx_paws",
+  "model": "cybercraft:lynx_paws",
+  "slots": [
+    "cybercraft:legs"
+  ],
+  "tier": 1
+}

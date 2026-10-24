@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:behavioral_imprint",
+  "capacity": 4.0,
+  "item": "cybercraft:behavioral_imprint",
+  "model": "cybercraft:behavioral_imprint",
+  "slots": [
+    "cybercraft:ocular"
+  ],
+  "tier": 2
+}

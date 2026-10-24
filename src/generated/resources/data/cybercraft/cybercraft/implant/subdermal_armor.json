@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:subdermal_armor",
+  "capacity": 7.0,
+  "item": "cybercraft:subdermal_armor",
+  "model": "cybercraft:subdermal_armor",
+  "slots": [
+    "cybercraft:integumentary"
+  ],
+  "tier": 2
+}

@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:maneuvering_system",
+  "capacity": 5.0,
+  "item": "cybercraft:maneuvering_system",
+  "model": "cybercraft:maneuvering_system",
+  "slots": [
+    "cybercraft:nervous"
+  ],
+  "tier": 2
+}

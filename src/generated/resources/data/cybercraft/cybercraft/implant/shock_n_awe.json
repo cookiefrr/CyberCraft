@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:shock_n_awe",
+  "capacity": 6.0,
+  "item": "cybercraft:shock_n_awe",
+  "model": "cybercraft:shock_n_awe",
+  "slots": [
+    "cybercraft:integumentary"
+  ],
+  "tier": 2
+}

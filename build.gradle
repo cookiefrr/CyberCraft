@@ -9,16 +9,56 @@ java {
     toolchain.languageVersion = JavaLanguageVersion.of(21)
     withSourcesJar()
 }
+sourceSets { gametest }
+configurations {
+    gametestImplementation.extendsFrom implementation
+    gametestRuntimeOnly.extendsFrom runtimeOnly
+}
+dependencies {
+    implementation "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
+    gametestImplementation sourceSets.main.output
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+repositories {
+    mavenCentral()
+    maven { name='GeckoLib'; url='https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'; content { includeGroup 'software.bernie.geckolib' } }
+}
+test {
+    useJUnitPlatform()
+    systemProperty 'cybercraft.projectDir', projectDir.absolutePath
+}
 neoForge {
     version = project.neo_version
-    runs {
-        client { client() }
-        server { server(); programArgument '--nogui' }
+    addModdingDependenciesTo sourceSets.gametest
+    mods {
+        cybercraft { sourceSet sourceSets.main }
+        cybercraft_tests { sourceSet sourceSets.gametest }
     }
-    mods { cybercraft { sourceSet sourceSets.main } }
+    runs {
+        gameTestServer {
+            type='gameTestServer'
+            gameDirectory=file('run-gametest')
+            sourceSet=sourceSets.gametest
+            loadedMods=[mods.cybercraft,mods.cybercraft_tests]
+            systemProperty 'neoforge.enabledGameTestNamespaces','cybercraft_tests'
+        }
+
+        data { data(); loadedMods = [mods.cybercraft]; programArguments.addAll '--mod','cybercraft','--all','--output',file('src/generated/resources').absolutePath,'--existing',file('src/main/resources').absolutePath }
+
+        client { client(); loadedMods = [mods.cybercraft] }
+        server { server(); programArgument '--nogui'; loadedMods = [mods.cybercraft] }
+    }
+    unitTest { enable(); testedMod=mods.cybercraft; loadedMods=[mods.cybercraft] }
+
 }
 processResources {
     inputs.property 'version', project.version
     filesMatching('META-INF/neoforge.mods.toml') { expand(version: project.version) }
 }
 tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+
+sourceSets.main.resources.srcDir "src/generated/resources"
+
+sourceSets.main.resources.exclude "**/.cache/**"

@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:berserk",
+  "capacity": 14.0,
+  "item": "cybercraft:berserk",
+  "model": "cybercraft:berserk",
+  "slots": [
+    "cybercraft:operating_system"
+  ],
+  "tier": 3
+}

@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:newton_memory_boost",
+  "capacity": 4.0,
+  "item": "cybercraft:newton_memory_boost",
+  "model": "cybercraft:newton_memory_boost",
+  "slots": [
+    "cybercraft:frontal_cortex"
+  ],
+  "tier": 2
+}

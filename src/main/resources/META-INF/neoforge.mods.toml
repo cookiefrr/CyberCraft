@@ -19,3 +19,13 @@ type="required"
 versionRange="[1.21.1]"
 ordering="NONE"
 side="BOTH"
+
+[[mixins]]
+config="cybercraft.mixins.json"
+
+[[dependencies.cybercraft]]
+modId="geckolib"
+type="required"
+versionRange="[4.9.3,5)"
+ordering="AFTER"
+side="BOTH"

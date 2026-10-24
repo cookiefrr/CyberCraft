@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "tag": "c:ingots/neodymium"
+    },
+    "F": {
+      "item": "minecraft:diamond"
+    },
+    "G": {
+      "tag": "c:ingots/titanium"
+    }
+  },
+  "pattern": [
+    "G G",
+    " E ",
+    " F "
+  ],
+  "result": {
+    "count": 1,
+    "id": "cybercraft:optical_camo"
+  }
+}

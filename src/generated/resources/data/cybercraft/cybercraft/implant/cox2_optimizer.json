@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:cox2_optimizer",
+  "capacity": 5.0,
+  "item": "cybercraft:cox2_optimizer",
+  "model": "cybercraft:cox2_optimizer",
+  "slots": [
+    "cybercraft:frontal_cortex"
+  ],
+  "tier": 2
+}

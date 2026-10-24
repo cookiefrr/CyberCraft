@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "cybercraft:circuit_board"
+    },
+    "E": {
+      "item": "minecraft:iron_ingot"
+    },
+    "F": {
+      "item": "minecraft:copper_ingot"
+    },
+    "S": {
+      "item": "cybercraft:servo_motor"
+    }
+  },
+  "pattern": [
+    "C C",
+    "SES",
+    " F "
+  ],
+  "result": {
+    "count": 1,
+    "id": "cybercraft:handle_wrap"
+  }
+}

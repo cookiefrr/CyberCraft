@@ -1,33 +1,27 @@
 package com.cybercraft.cyberware;
 
-/**
- * Slot corporei del catalogo Cyberpunk 2077.
- * In ogni slot può essere installato un solo impianto alla volta.
- */
-public enum CyberwareSlot {
-    OPERATING_SYSTEM("operating_system"),
-    FRONTAL_CORTEX("frontal_cortex"),
-    OCULAR("ocular"),
-    HANDS("hands"),
-    ARMS("arms"),
-    NERVOUS("nervous"),
-    CIRCULATORY("circulatory"),
-    INTEGUMENTARY("integumentary"),
-    SKELETON("skeleton"),
-    LEGS("legs");
+import com.cybercraft.CyberCraft;
+import net.minecraft.resources.ResourceLocation;
 
-    private final String id;
+public record CyberwareSlot(String id) {
+  public static final CyberwareSlot OPERATING_SYSTEM = new CyberwareSlot("operating_system");
+  public static final CyberwareSlot FRONTAL_CORTEX = new CyberwareSlot("frontal_cortex");
+  public static final CyberwareSlot OCULAR = new CyberwareSlot("ocular");
+  public static final CyberwareSlot HANDS = new CyberwareSlot("hands");
+  public static final CyberwareSlot ARMS = new CyberwareSlot("arms");
+  public static final CyberwareSlot NERVOUS = new CyberwareSlot("nervous");
+  public static final CyberwareSlot CIRCULATORY = new CyberwareSlot("circulatory");
+  public static final CyberwareSlot INTEGUMENTARY = new CyberwareSlot("integumentary");
+  public static final CyberwareSlot SKELETON = new CyberwareSlot("skeleton");
+  public static final CyberwareSlot LEGS = new CyberwareSlot("legs");
 
-    CyberwareSlot(String id) {
-        this.id = id;
-    }
+  public static final CyberwareSlot CYBERDECK = new CyberwareSlot("cyberdeck");
 
-    public String id() {
-        return id;
-    }
+  public ResourceLocation resource() {
+    return CyberCraft.id(id);
+  }
 
-    /** Chiave di traduzione del nome dello slot. */
-    public String translationKey() {
-        return "slot.cybercraft." + id;
-    }
+  public String translationKey() {
+    return "slot.cybercraft." + id;
+  }
 }

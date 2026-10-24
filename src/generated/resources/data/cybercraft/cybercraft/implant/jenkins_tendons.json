@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:jenkins_tendons",
+  "capacity": 5.0,
+  "item": "cybercraft:jenkins_tendons",
+  "model": "cybercraft:jenkins_tendons",
+  "slots": [
+    "cybercraft:legs"
+  ],
+  "tier": 2
+}

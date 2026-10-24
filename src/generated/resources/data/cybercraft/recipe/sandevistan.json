@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "cybercraft:circuit_board"
+    },
+    "E": {
+      "tag": "c:ingots/neodymium"
+    },
+    "F": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "pattern": [
+    " C ",
+    "CEC",
+    " F "
+  ],
+  "result": {
+    "count": 1,
+    "id": "cybercraft:sandevistan"
+  }
+}

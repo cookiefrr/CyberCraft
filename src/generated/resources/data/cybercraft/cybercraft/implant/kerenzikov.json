@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:kerenzikov",
+  "capacity": 6.0,
+  "item": "cybercraft:kerenzikov",
+  "model": "cybercraft:kerenzikov",
+  "slots": [
+    "cybercraft:nervous"
+  ],
+  "tier": 2
+}

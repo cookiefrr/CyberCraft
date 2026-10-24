@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "minecraft:glowstone_dust"
+    },
+    "L": {
+      "tag": "c:ingots/lithium"
+    },
+    "S": {
+      "item": "minecraft:slime_ball"
+    }
+  },
+  "pattern": [
+    " S ",
+    "LGL",
+    " S "
+  ],
+  "result": {
+    "count": 2,
+    "id": "cybercraft:bio_gel"
+  }
+}

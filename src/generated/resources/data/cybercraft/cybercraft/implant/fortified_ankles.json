@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:fortified_ankles",
+  "capacity": 6.0,
+  "item": "cybercraft:fortified_ankles",
+  "model": "cybercraft:fortified_ankles",
+  "slots": [
+    "cybercraft:legs"
+  ],
+  "tier": 2
+}

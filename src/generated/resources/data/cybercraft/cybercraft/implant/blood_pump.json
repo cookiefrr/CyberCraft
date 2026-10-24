@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:blood_pump",
+  "capacity": 5.0,
+  "item": "cybercraft:blood_pump",
+  "model": "cybercraft:blood_pump",
+  "slots": [
+    "cybercraft:circulatory"
+  ],
+  "tier": 2
+}

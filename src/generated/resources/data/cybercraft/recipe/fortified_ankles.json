@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "tag": "c:ingots/titanium"
+    },
+    "G": {
+      "tag": "c:ingots/titanium"
+    },
+    "S": {
+      "item": "cybercraft:servo_motor"
+    }
+  },
+  "pattern": [
+    "G G",
+    " E ",
+    " S "
+  ],
+  "result": {
+    "count": 1,
+    "id": "cybercraft:fortified_ankles"
+  }
+}

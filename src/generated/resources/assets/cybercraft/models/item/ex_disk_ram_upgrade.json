@@ -1,0 +1,12 @@
+{
+  "base": {
+    "parent": "cybercraft:item/ex_disk_ram_upgrade_3d"
+  },
+  "gui_light": "front",
+  "loader": "neoforge:separate_transforms",
+  "perspectives": {
+    "gui": {
+      "parent": "builtin/entity"
+    }
+  }
+}

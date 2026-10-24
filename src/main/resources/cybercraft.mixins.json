@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.cybercraft.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "SignalMixin",
+    "BlockSignalMixin",
+    "WireSignalMixin"
+  ],
+  "client": [
+    "client.ScannerGlowMixin",
+    "client.ScannerColorMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

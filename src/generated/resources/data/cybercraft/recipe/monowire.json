@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "N": {
+      "tag": "c:ingots/neodymium"
+    },
+    "S": {
+      "item": "minecraft:string"
+    }
+  },
+  "pattern": [
+    " N ",
+    "SDS",
+    " N "
+  ],
+  "result": {
+    "count": 1,
+    "id": "cybercraft:monowire"
+  }
+}

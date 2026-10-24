@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:gorilla_arms",
+  "capacity": 8.0,
+  "item": "cybercraft:gorilla_arms",
+  "model": "cybercraft:gorilla_arms",
+  "slots": [
+    "cybercraft:arms"
+  ],
+  "tier": 2
+}

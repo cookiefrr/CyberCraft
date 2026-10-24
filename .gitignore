@@ -3,7 +3,7 @@
 build/
 out/
 
-# Ambiente di sviluppo locale
+# Local development
 run/
 logs/
 .tools/
@@ -21,9 +21,21 @@ logs/
 bin/
 *.launch
 
-# Sistema operativo
+# Operating system
 .DS_Store
 Thumbs.db
 
-# Registro di lavoro locale (la documentazione pubblica vive in docs/)
+# Local working notes
 /CyberCraft.md
+
+# Local tooling and generated caches
+.agents/
+.codex/
+.claude/
+.cursor/
+src/generated/resources/.cache/
+run-data/
+run-gametest/
+
+/src/mods/
+/libs/*.jar

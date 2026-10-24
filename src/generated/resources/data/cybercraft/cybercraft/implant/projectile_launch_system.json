@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:projectile_launch_system",
+  "capacity": 10.0,
+  "item": "cybercraft:projectile_launch_system",
+  "model": "cybercraft:projectile_launch_system",
+  "slots": [
+    "cybercraft:arms"
+  ],
+  "tier": 3
+}

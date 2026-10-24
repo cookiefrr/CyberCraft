@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:heal_on_kill",
+  "capacity": 5.0,
+  "item": "cybercraft:heal_on_kill",
+  "model": "cybercraft:heal_on_kill",
+  "slots": [
+    "cybercraft:circulatory"
+  ],
+  "tier": 2
+}

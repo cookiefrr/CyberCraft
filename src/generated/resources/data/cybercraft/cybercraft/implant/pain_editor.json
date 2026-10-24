@@ -1,0 +1,10 @@
+{
+  "behavior": "cybercraft:pain_editor",
+  "capacity": 6.0,
+  "item": "cybercraft:pain_editor",
+  "model": "cybercraft:pain_editor",
+  "slots": [
+    "cybercraft:integumentary"
+  ],
+  "tier": 2
+}
