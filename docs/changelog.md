@@ -1,5 +1,9 @@
 # Changes
 
+## 0.3.3 — Cuboid cyberware models
+
+Every implant now has a dedicated palette-based 3D item model and hand-authored worn geometry made only of cuboids; the Monowire also gains a 3D item model. Worn models are authored in humanoid model pixels and attached to the head, torso, arms, or legs, with generated mirrored variants for left limbs. They align with the player model in third person and with the rendered arm in first person. A 256×256 material atlas provides dark metal, chrome, titanium, ceramics, circuits, and neon accents with blocky light/base/dark shading. Mantis Blades keep their animated renderer and 300 ms toggle, recolored to white ceramic, silver, and neon orange. No gameplay or balance changes.
+
 ## 0.3.1 — Animated Mantis Blades
 
 Mantis Blades now use a dedicated 3D forearm housing and a long straight, serrated blade with a silver cutting edge and red cabling, rendered in first and third person. M (remappable) toggles the blades with a 300 ms slide-out or retract animation; they remain extended until pressed again. The toggle is server-authoritative and transient: it resets on implant removal, death, logout, or server stop, and is re-sent to players who start tracking the wearer. The +6 unarmed bonus and 3-tolerance cost apply only while the blades are extended and the implant is operational. Retracted blades keep the housing visible. Non-player wearers render the blades permanently extended, preserving their mob loadout behavior. Visual acceptance is performed by the user.

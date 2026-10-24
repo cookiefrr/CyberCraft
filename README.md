@@ -2,7 +2,7 @@
 
 Cyberpunk-inspired cyberware and netrunning for **Minecraft 1.21.1 / NeoForge**.
 
-**Version:** 0.3.1 · **Development:** `indev` · **Author:** Ian
+**Version:** 0.3.3 · **Development:** `indev` · **Author:** Ian
 
 ## Requirements
 
@@ -17,7 +17,7 @@ Put CyberCraft and GeckoLib in your instance's `mods` folder. Remove older Cyber
 
 - 43 installable implants across 11 extensible slot types; equipment survives death.
 - Cyberware tabs beside survival and creative inventories, with real slots and Back navigation.
-- Dark/cyan interfaces, Shift-expanded descriptions, flat inventory icons, and 3D equipped models.
+- Dark/cyan interfaces, Shift-expanded descriptions, flat inventory icons, and cuboid 3D models for all 43 implants plus the Monowire, worn on the matching body part in first and third person.
 - Kiroshi optics unlock scanning; an installed cyberdeck additionally unlocks hacking.
 - Three living-target hacks, Remote Access, and five-second redstone Disruption.
 - Sandevistan, Berserk, double jump, Monowire, toggleable Mantis Blades with animated 3D extensions, crafting stations, and three world-generated metals.

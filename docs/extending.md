@@ -35,6 +35,14 @@ Create `data/example/cybercraft/implant/amethyst.json`:
 
 One definition may accept several slot types. Each item must have one implant definition. Tier is 1–3; capacity is a finite non-negative number. An individual implant definition cannot be installed twice. `model` identifies a registered item's baked inventory model; resource packs can replace its geometry. Built-in implants select flat icons for GUI rendering and native 3D geometry for other contexts.
 
+## Add models
+
+Built-in 3D geometry lives in `ImplantModels`, keyed by the implant's item path. Each model is a list of groups; a group targets one body part (`HEAD`, `BODY`, `RIGHT_ARM`, `LEFT_ARM`, `RIGHT_LEG`, `LEFT_LEG`) and lists cuboids in that part's local model pixels. `mirror` groups receive a generated left-limb copy. Cuboids must have increasing bounds; materials come from the shared `Material` enum and select a light, base, or dark swatch from `textures/item/cyberware_palette.png`.
+
+Data generation writes `<id>_3d.json` (the auto-fitted, uniformly scaled item model), one `<id>_worn_<index>.json` per group, and `<id>_worn_<index>_left.json` for mirrored groups. The first group also determines the 3D item silhouette. Registering or replacing a catalogue model requires running `./gradlew runData`; no display transforms are added to worn models because body transforms come from the player model part.
+
+Items that are not in the catalogue keep the flat `item/generated` model. Data packs that introduce a new `cybercraft` item can add a catalogue entry or supply their own resource-pack model through `model`; unknown model IDs fall back to the legacy anchor placement.
+
 Add `book.cybercraft.desc.amethyst` to your resource pack for a concise description. Item components are retained through equipment transactions. Missing definitions or reduced position counts move affected stacks into recoverable slots when the equipment is reconciled; nothing is deleted.
 
 ## Add behavior in Java

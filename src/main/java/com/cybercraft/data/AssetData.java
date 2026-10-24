@@ -1,8 +1,15 @@
 package com.cybercraft.data;
 
-import com.cybercraft.cyberware.Cyberware;
+import com.cybercraft.cyberware.ImplantModels;
+import com.cybercraft.cyberware.ImplantModels.Box;
+import com.cybercraft.cyberware.ImplantModels.Group;
+import com.cybercraft.cyberware.ImplantModels.Material;
+import com.cybercraft.cyberware.ImplantModels.Model;
+import com.cybercraft.cyberware.ImplantModels.Tone;
 import com.cybercraft.registry.*;
 import com.google.gson.*;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.data.PackOutput;
 
 public final class AssetData extends JsonDataProvider {
@@ -54,106 +61,144 @@ public final class AssetData extends JsonDataProvider {
     }
     for (var holder : ModItems.ITEMS.getEntries()) {
       String id = holder.getId().getPath();
-      var implant = Cyberware.byId(id);
-      JsonObject model =
-          implant.isPresent()
-              ? implantModel(implant.get())
-              : obj(
-                  "parent",
-                  "minecraft:item/generated",
-                  "textures",
-                  obj("layer0", "cybercraft:item/" + id));
-      if (implant.isPresent()) {
-        add("assets/cybercraft/models/item/" + id + "_3d.json", model);
+      Model spec = ImplantModels.get(id);
+      if (spec == null) {
         add(
-            "assets/cybercraft/models/item/icons/" + id + ".json",
+            "assets/cybercraft/models/item/" + id + ".json",
             obj(
                 "parent",
                 "minecraft:item/generated",
                 "textures",
                 obj("layer0", "cybercraft:item/" + id)));
-        model =
-            obj(
-                "loader",
-                "neoforge:separate_transforms",
-                "gui_light",
-                "front",
-                "base",
-                obj("parent", "cybercraft:item/" + id + "_3d"),
-                "perspectives",
-                obj("gui", obj("parent", "builtin/entity")));
+        continue;
       }
-      add("assets/cybercraft/models/item/" + id + ".json", model);
+      add("assets/cybercraft/models/item/" + id + "_3d.json", itemModel(spec));
+      add(
+          "assets/cybercraft/models/item/icons/" + id + ".json",
+          obj(
+              "parent",
+              "minecraft:item/generated",
+              "textures",
+              obj("layer0", "cybercraft:item/" + id)));
+      for (int i = 0; i < spec.groups().size(); i++) {
+        Group group = spec.groups().get(i);
+        add(
+            "assets/cybercraft/models/item/" + id + "_worn_" + i + ".json",
+            wornModel(group.boxes()));
+        if (group.mirror())
+          add(
+              "assets/cybercraft/models/item/" + id + "_worn_" + i + "_left.json",
+              wornModel(mirrored(group.boxes())));
+      }
+      add(
+          "assets/cybercraft/models/item/" + id + ".json",
+          obj(
+              "loader",
+              "neoforge:separate_transforms",
+              "gui_light",
+              "front",
+              "base",
+              obj("parent", "cybercraft:item/" + id + "_3d"),
+              "perspectives",
+              obj("gui", obj("parent", "builtin/entity"))));
     }
   }
 
-  private JsonObject cube(float x, float y, float z, float xx, float yy, float zz, String texture) {
+  private JsonObject paletteFace(Material material, Tone tone) {
+    int swatch = ImplantModels.swatch(material, tone);
+    return obj(
+        "texture",
+        "#palette",
+        "uv",
+        array(
+            ImplantModels.u0(swatch),
+            ImplantModels.v0(swatch),
+            ImplantModels.u1(swatch),
+            ImplantModels.v1(swatch)));
+  }
+
+  private JsonObject paletteCube(Box box) {
+    return paletteCube(
+        box.x0(), box.y0(), box.z0(), box.x1(), box.y1(), box.z1(), box.material());
+  }
+
+  private JsonObject paletteCube(
+      float x0, float y0, float z0, float x1, float y1, float z1, Material material) {
     var faces = new JsonObject();
-    for (String side : new String[] {"down", "up", "north", "south", "west", "east"})
-      faces.add(side, obj("texture", "#" + texture, "uv", array(0, 0, 16, 16)));
-    return obj("from", array(x, y, z), "to", array(xx, yy, zz), "faces", faces);
+    faces.add("down", paletteFace(material, Tone.DARK));
+    faces.add("up", paletteFace(material, Tone.LIGHT));
+    for (String side : new String[] {"north", "south", "west", "east"})
+      faces.add(side, paletteFace(material, Tone.BASE));
+    return obj(
+        "from", array(f(x0), f(y0), f(z0)), "to", array(f(x1), f(y1), f(z1)), "faces", faces);
   }
 
-  private JsonObject implantModel(Cyberware implant) {
-    String id = implant.id(), slot = implant.slot().id();
-    int variant = id.hashCode() & 0x7fffffff;
+  private JsonArray paletteElements(List<Box> boxes) {
     var elements = new JsonArray();
-    switch (slot) {
-      case "ocular" -> {
-        elements.add(cube(1, 6, 6, 15, 10, 9, "metal"));
-        elements.add(cube(2, 6.5f, 5.5f, 6, 9.5f, 6.1f, "accent"));
-        elements.add(cube(10, 6.5f, 5.5f, 14, 9.5f, 6.1f, "badge"));
+    for (Box box : boxes) elements.add(paletteCube(box));
+    return elements;
+  }
+
+  private JsonObject wornModel(List<Box> boxes) {
+    JsonObject model =
+        obj(
+            "parent",
+            "minecraft:block/block",
+            "textures",
+            obj(
+                "particle",
+                "cybercraft:item/cyberware_palette",
+                "palette",
+                "cybercraft:item/cyberware_palette"),
+            "display",
+            obj(),
+            "elements",
+            paletteElements(boxes));
+    for (Box box : boxes)
+      if (box.material() == Material.GLASS) {
+        model.addProperty("render_type", "minecraft:translucent");
+        break;
       }
-      case "arms", "hands" -> {
-        elements.add(cube(4, 2, 5, 12, 13, 11, "metal"));
-        elements.add(cube(3, 3, 4, 5, 11, 12, "accent"));
-        elements.add(cube(5, 3, 4.6f, 11, 9, 5.1f, "badge"));
-        if (id.equals("mantis_blades")) {
-          elements.add(cube(6, 3, 3.4f, 10, 14, 4.6f, "metal"));
-          elements.add(cube(9.5f, 4, 3.1f, 10.3f, 13, 3.6f, "metal"));
-          elements.add(cube(6.3f, 3.5f, 3.1f, 9.7f, 4.6f, 3.5f, "accent"));
-          elements.add(cube(6.2f, 1.8f, 3.5f, 10, 3.0f, 4.6f, "metal"));
-          for (int rib = 0; rib < 3; rib++)
-            elements.add(cube(6.8f, 6 + rib * 3, 3.0f, 9.4f, 6.8f + rib * 3, 3.4f, "accent"));
-        }
-        if (id.equals("projectile_launch_system")) {
-          elements.add(cube(5, 7, 2, 11, 13, 5, "metal"));
-          elements.add(cube(6, 8, 1.8f, 10, 12, 2.1f, "accent"));
-        }
-      }
-      case "legs" -> {
-        elements.add(cube(5, 1, 5, 11, 15, 11, "metal"));
-        elements.add(cube(4, 2, 4, 6, 14, 6, "accent"));
-        elements.add(cube(5.5f, 6, 4.5f, 10.5f, 11, 5.1f, "badge"));
-      }
-      case "cyberdeck" -> {
-        elements.add(cube(2, 2, 6, 14, 14, 10, "metal"));
-        elements.add(cube(3, 5, 5.7f, 13, 13, 6.1f, "badge"));
-        elements.add(cube(3, 2.5f, 5.7f, 13, 4, 6.2f, "accent"));
-      }
-      default -> {
-        elements.add(cube(3, 3, 5, 13, 13, 11, "metal"));
-        elements.add(cube(4, 4, 4.6f, 12, 12, 5.1f, "badge"));
-        for (int k = 0; k < 2 + variant % 3; k++) {
-          float x = 3 + k * 2.5f;
-          elements.add(cube(x, 2, 6, x + 1, 3, 10, "accent"));
-        }
-        elements.add(cube(2, 4 + variant % 4, 6, 3, 10 + variant % 3, 9, "accent"));
-      }
+    return model;
+  }
+
+  private JsonObject itemModel(Model spec) {
+    List<Box> boxes = spec.groups().get(0).boxes();
+    float minX = Float.MAX_VALUE, minY = Float.MAX_VALUE, minZ = Float.MAX_VALUE;
+    float maxX = -Float.MAX_VALUE, maxY = -Float.MAX_VALUE, maxZ = -Float.MAX_VALUE;
+    for (Box box : boxes) {
+      minX = Math.min(minX, box.x0());
+      minY = Math.min(minY, box.y0());
+      minZ = Math.min(minZ, box.z0());
+      maxX = Math.max(maxX, box.x1());
+      maxY = Math.max(maxY, box.y1());
+      maxZ = Math.max(maxZ, box.z1());
     }
+    float cx = (minX + maxX) / 2f, cy = (minY + maxY) / 2f, cz = (minZ + maxZ) / 2f;
+    float largest = Math.max(maxX - minX, Math.max(maxY - minY, maxZ - minZ));
+    float scale = 13f / Math.max(largest, .001f);
+    var elements = new JsonArray();
+    for (Box box : boxes)
+      elements.add(
+          paletteCube(
+              8 + (box.x0() - cx) * scale,
+              8 + (box.y0() - cy) * scale,
+              8 + (box.z0() - cz) * scale,
+              8 + (box.x1() - cx) * scale,
+              8 + (box.y1() - cy) * scale,
+              8 + (box.z1() - cz) * scale,
+              box.material()));
     return obj(
         "parent",
         "minecraft:block/block",
+        "gui_light",
+        "front",
         "textures",
         obj(
             "particle",
-            "cybercraft:block/dark_metal_block",
-            "metal",
-            "cybercraft:block/dark_metal_block",
-            "accent",
-            "cybercraft:block/neon_block",
-            "badge",
-            "cybercraft:item/" + id),
+            "cybercraft:item/cyberware_palette",
+            "palette",
+            "cybercraft:item/cyberware_palette"),
         "elements",
         elements,
         "display",
@@ -168,6 +213,18 @@ public final class AssetData extends JsonDataProvider {
             transform(75, 45, 0, 0, 2, 1, .5f),
             "firstperson_righthand",
             transform(0, 45, 0, 1, 2, 0, .55f)));
+  }
+
+  private static List<Box> mirrored(List<Box> boxes) {
+    var result = new ArrayList<Box>(boxes.size());
+    for (Box box : boxes)
+      result.add(
+          new Box(-box.x1(), box.y0(), box.z0(), -box.x0(), box.y1(), box.z1(), box.material()));
+    return result;
+  }
+
+  private static float f(float value) {
+    return Math.round(value * 1000f) / 1000f;
   }
 
   private JsonObject transform(int x, int y, int z, int tx, int ty, int tz, float scale) {

@@ -16,7 +16,7 @@ Kiroshi optics unlock the R scanner. A separately installed cyberdeck enables G 
 
 Mob enhancement starts on day 5 at a 5% chance. Chance rises linearly to 35% on day 50 and then stops. Maximum loadout/tier is one on day 5, two on day 15, and three on day 30. Age uses elapsed game ticks, not the sun clock. Only eligible naturally spawned hostile humanoids are rolled, once; no automatic implant drops or mob block hacks are added.
 
-Implant item icons remain flat in inventory/hotbar views. Their physical attachments remain 3D. Hold Shift over an item for technical details. The Edgerunner's Book reads crafting recipes from the active recipe manager.
+Implant item icons remain flat in inventory/hotbar views. In the world and on the player, all 43 implants and the Monowire use dedicated cuboid 3D models: OS and torso implants sit on the back or chest, frontal-cortex and ocular implants on the head, hand/arm implants on both arms or the right arm, and leg/skeleton implants on the matching limbs. Models follow player animation in third person and the rendered arm in first person. Hold Shift over an item for technical details. The Edgerunner's Book reads crafting recipes from the active recipe manager.
 
 ## Implant catalog
 

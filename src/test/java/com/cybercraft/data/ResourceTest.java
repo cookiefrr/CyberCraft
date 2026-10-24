@@ -2,6 +2,7 @@ package com.cybercraft.data;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.cybercraft.cyberware.ImplantModels;
 import com.google.gson.*;
 import java.nio.file.*;
 import org.junit.jupiter.api.Test;
@@ -44,11 +45,42 @@ class ResourceTest {
         assertEquals("minecraft:item/generated", icon.get("parent").getAsString());
         var model3d = read(GENERATED.resolve("assets/cybercraft/models/item/" + id + "_3d.json"));
         assertFalse(model3d.getAsJsonArray("elements").isEmpty());
+        assertEquals(
+            "cybercraft:item/cyberware_palette",
+            model3d.getAsJsonObject("textures").get("palette").getAsString());
+        var spec = ImplantModels.get(id);
+        assertNotNull(spec, id);
+        for (int i = 0; i < spec.groups().size(); i++) {
+          var worn =
+              read(
+                  GENERATED.resolve(
+                      "assets/cybercraft/models/item/" + id + "_worn_" + i + ".json"));
+          assertFalse(worn.getAsJsonArray("elements").isEmpty(), id + " worn " + i);
+          assertEquals(0, worn.getAsJsonObject("display").size(), id + " worn display " + i);
+          if (spec.groups().get(i).mirror()) {
+            var left =
+                read(
+                    GENERATED.resolve(
+                        "assets/cybercraft/models/item/" + id + "_worn_" + i + "_left.json"));
+            assertFalse(left.getAsJsonArray("elements").isEmpty(), id + " worn left " + i);
+          }
+        }
         assertTrue(
             Files.exists(
                 ROOT.resolve("src/main/resources/assets/cybercraft/textures/item/" + id + ".png")));
       }
     }
+  }
+
+  @Test
+  void monowireHasAThreeDimensionalItemModel() throws Exception {
+    var model = read(GENERATED.resolve("assets/cybercraft/models/item/monowire.json"));
+    assertEquals("neoforge:separate_transforms", model.get("loader").getAsString());
+    var model3d = read(GENERATED.resolve("assets/cybercraft/models/item/monowire_3d.json"));
+    assertFalse(model3d.getAsJsonArray("elements").isEmpty());
+    assertTrue(
+        Files.exists(
+            ROOT.resolve("src/main/resources/assets/cybercraft/textures/item/monowire.png")));
   }
 
   @Test
