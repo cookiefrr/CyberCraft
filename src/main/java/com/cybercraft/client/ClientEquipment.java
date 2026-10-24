@@ -135,6 +135,10 @@ public final class ClientEquipment {
               .registryOrThrow(EquipmentRegistry.SLOTS)
               .get(entry.slot());
       if (slot == null || !slot.anchor().equals("arms")) continue;
+      if (entry.definition().equals(CyberCraft.id("mantis_blades"))) {
+        MantisBladeRenderer.firstPerson(event);
+        continue;
+      }
       var pose = event.getPoseStack();
       pose.pushPose();
       pose.translate(0, -.08, -.08);

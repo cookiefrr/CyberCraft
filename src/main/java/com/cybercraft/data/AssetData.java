@@ -109,8 +109,12 @@ public final class AssetData extends JsonDataProvider {
         elements.add(cube(3, 3, 4, 5, 11, 12, "accent"));
         elements.add(cube(5, 3, 4.6f, 11, 9, 5.1f, "badge"));
         if (id.equals("mantis_blades")) {
-          elements.add(cube(6, 9, 4, 7, 23, 5, "accent"));
-          elements.add(cube(10, 9, 4, 11, 21, 5, "metal"));
+          elements.add(cube(6, 3, 3.4f, 10, 14, 4.6f, "metal"));
+          elements.add(cube(9.5f, 4, 3.1f, 10.3f, 13, 3.6f, "metal"));
+          elements.add(cube(6.3f, 3.5f, 3.1f, 9.7f, 4.6f, 3.5f, "accent"));
+          elements.add(cube(6.2f, 1.8f, 3.5f, 10, 3.0f, 4.6f, "metal"));
+          for (int rib = 0; rib < 3; rib++)
+            elements.add(cube(6.8f, 6 + rib * 3, 3.0f, 9.4f, 6.8f + rib * 3, 3.4f, "accent"));
         }
         if (id.equals("projectile_launch_system")) {
           elements.add(cube(5, 7, 2, 11, 13, 5, "metal"));

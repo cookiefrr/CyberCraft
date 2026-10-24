@@ -350,7 +350,7 @@ public final class ImplantEffects {
     if (!CyberwareManager.operational(player)) return 0;
     float bonus = 0;
     if (player.getMainHandItem().isEmpty()) {
-      if (data.has(Cyberware.MANTIS_BLADES) && CyberwareManager.spendTolerance(player, 3))
+      if (MantisBladeManager.active(player) && CyberwareManager.spendTolerance(player, 3))
         bonus += 6;
       if (data.has(Cyberware.GORILLA_ARMS) && CyberwareManager.spendTolerance(player, 2)) {
         bonus += 3;

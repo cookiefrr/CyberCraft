@@ -31,8 +31,16 @@ public final class ModNetworking {
         OpenCyberwarePayload.TYPE,
         OpenCyberwarePayload.CODEC,
         (p, c) -> CyberwareManager.openMenu((ServerPlayer) c.player()));
+    r.playToServer(
+        MantisBladePayload.TYPE,
+        MantisBladePayload.CODEC,
+        (p, c) -> MantisBladeManager.toggle((ServerPlayer) c.player()));
     r.playToClient(
         CyberwareSyncPayload.TYPE, CyberwareSyncPayload.CODEC, (p, c) -> ClientPayloads.sync(p));
+    r.playToClient(
+        MantisBladeStatePayload.TYPE,
+        MantisBladeStatePayload.CODEC,
+        (p, c) -> ClientPayloads.mantis(p));
     r.playToClient(
         OpenBookPayload.TYPE, OpenBookPayload.CODEC, (p, c) -> ClientPayloads.openBook());
     r.playToClient(

@@ -46,8 +46,13 @@ public final class CyberwareLayer<T extends LivingEntity, M extends EntityModel<
         case "head" ->
             attached(pose, buffer, light, model.head, entry, entity, 0, -.23, -.25, .33f);
         case "arms" -> {
-          attached(pose, buffer, light, model.rightArm, entry, entity, -.01, .30, -.01, .34f);
-          attached(pose, buffer, light, model.leftArm, entry, entity, .01, .30, -.01, .34f);
+          if (entry.definition().equals(com.cybercraft.CyberCraft.id("mantis_blades"))) {
+            MantisBladeRenderer.thirdPerson(pose, buffer, light, model.rightArm, entity);
+            MantisBladeRenderer.thirdPerson(pose, buffer, light, model.leftArm, entity);
+          } else {
+            attached(pose, buffer, light, model.rightArm, entry, entity, -.01, .30, -.01, .34f);
+            attached(pose, buffer, light, model.leftArm, entry, entity, .01, .30, -.01, .34f);
+          }
         }
         case "legs" -> {
           attached(pose, buffer, light, model.rightLeg, entry, entity, 0, .30, -.05, .36f);

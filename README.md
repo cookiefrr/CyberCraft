@@ -20,7 +20,7 @@ Put CyberCraft and GeckoLib in your instance's `mods` folder. Remove older Cyber
 - Dark/cyan interfaces, Shift-expanded descriptions, flat inventory icons, and 3D equipped models.
 - Kiroshi optics unlock scanning; an installed cyberdeck additionally unlocks hacking.
 - Three living-target hacks, Remote Access, and five-second redstone Disruption.
-- Sandevistan, Berserk, double jump, Monowire, crafting stations, and three world-generated metals.
+- Sandevistan, Berserk, double jump, Monowire, toggleable Mantis Blades with animated 3D extensions, crafting stations, and three world-generated metals.
 - Hostile mobs gradually gain cyberware from day 5, capped at 35% spawn chance and three implants.
 - English UI and an illustrated in-game manual.
 
@@ -33,6 +33,7 @@ Put CyberCraft and GeckoLib in your instance's `mods` folder. Remove older Cyber
 | Execute hack | G |
 | Previous / next hack | X / Z |
 | Sandevistan / Berserk | V |
+| Toggle Mantis Blades | M |
 | Detailed implant tooltip | Hold Shift |
 
 Neural Link opens cyberware, installs from the other hand, or activates the OS when sneak-used.
