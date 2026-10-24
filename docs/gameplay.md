@@ -1,6 +1,6 @@
 # Gameplay e contenuti
 
-Riferimento ai contenuti della versione `0.2.1` per Minecraft 1.21.1 / Fabric.
+Riferimento ai contenuti della versione `0.2.2` per Minecraft 1.21.1 / Fabric.
 
 ## Slot corporei
 
@@ -82,7 +82,14 @@ Un solo impianto per slot:
 | Riavvio Ottico | 3 | Cecità per 10 s; il mob perde il bersaglio. |
 | Contagio | 5 | Veleno II e Debolezza per 10 s. |
 
-Lancio con tasto destro mirando un bersaglio entro 24 blocchi; Maiusc + tasto destro cambia hack. La selezione si può scorrere con la rotella o con Z/X.
+Lancio con tasto destro mirando qualsiasi entità vivente in linea di vista, entro `min(render distance × 16, 64)` blocchi; il server valida fino a 64. Maiusc + tasto destro cambia hack; la selezione si scorre solo con Z/X, la rotella resta alla hotbar.
+
+### Scanner e scheda bersaglio
+
+- Con lo scanner attivo le entità viventi visibili nel campo visivo ricevono un outline rosso; il limite è 48 entità per aggiornamento, a 4 Hz.
+- La scheda statistiche compare solo quando il mirino è sopra un bersaglio evidenziato: nome, tipo, fazione, salute, armatura/robustezza, effetti attivi e barra di upload.
+- Quando il mirino lascia il bersaglio la scheda sfuma in 120 ms.
+- Bersagli validi: mob, animali, villager, giocatori e armor stand; esclusi sé stessi, morti e spettatori.
 
 ## Materiali e componenti
 

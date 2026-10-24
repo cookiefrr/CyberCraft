@@ -2,7 +2,7 @@
 
 Mod per **Minecraft 1.21.1** su **Fabric** ispirata a Cyberpunk 2077. Aggiunge cyberware installabile, netrunning, Sandevistan, un HUD scanner, minerali, banchi da lavoro e un manuale consultabile in gioco.
 
-**Versione:** `0.2.1` · **Branch stabile:** `main` · **Sviluppo:** `indev`
+**Versione:** `0.2.2` · **Branch stabile:** `main` · **Sviluppo:** `indev`
 
 **Repository:** https://github.com/cookiefrr/CyberCraft
 
@@ -25,7 +25,8 @@ git clone https://github.com/cookiefrr/CyberCraft.git
 - **Cyberdeck** con tre quickhack: Cortocircuito, Riavvio Ottico e Contagio.
 - **RAM massima 100**, rigenerazione passiva; l'Ex-Disk aumenta solo la velocità di rigenerazione.
 - **HUD scanner** con reticolo dinamico, pannello quickhack, pannello bersaglio, barra di upload e glitch da danno.
-- Quickhack lanciabili mirando un bersaglio entro 24 blocchi.
+- Quickhack lanciabili mirando un qualsiasi `LivingEntity` nel campo visivo, fino a `min(render distance × 16, 64)` blocchi.
+- Outline rosso sui bersagli validi in vista e pannello statistiche quando il mirino li inquadra.
 
 ### Sandevistan e Berserk
 - **Sandevistan**: 10 secondi di Velocità III e Rapidità II; i mob entro 15 blocchi vengono rallentati dell'85%. Ricarica 30 secondi.
@@ -63,7 +64,7 @@ La mod va installata sia sul client sia sul server: HUD, schermate e keybind ric
 
 1. Installa Fabric Loader per Minecraft 1.21.1.
 2. Metti **Fabric API** nella cartella `mods`.
-3. Copia `cybercraft-0.2.1.jar` nella cartella `mods`.
+3. Copia `cybercraft-0.2.2.jar` nella cartella `mods`.
 4. Avvia il gioco con il profilo Fabric 1.21.1.
 
 Non lasciare due versioni di CyberCraft nella stessa cartella `mods`.
@@ -78,7 +79,6 @@ Non lasciare due versioni di CyberCraft nella stessa cartella `mods`.
 | Esegui quickhack | `G` | Sì |
 | Quickhack precedente | `X` | Sì |
 | Quickhack successivo | `Z` | Sì |
-| Naviga quickhack | Rotella del mouse | No |
 | Installa impianto / apri Cyberware | Tasto destro con Neural Link | — |
 | Cambia quickhack | Maiusc + tasto destro con Cyberdeck | — |
 
@@ -131,6 +131,7 @@ src/main/resources/
 - [docs/changelog.md](docs/changelog.md) — cronologia delle versioni
 - [docs/roadmap.md](docs/roadmap.md) — prossimi passi
 - [docs/dev-log.md](docs/dev-log.md) — registro degli interventi
+- [docs/quickhack-targeting.md](docs/quickhack-targeting.md) — targeting dal mirino, outline rosso e scheda statistiche
 
 ## Branch
 
@@ -139,7 +140,7 @@ src/main/resources/
 
 ## Stato e limiti noti
 
-- La build `0.2.1` è verificata con `gradlew build --offline` e con un server dedicato; il test gameplay lato client in un mondo reale è ancora da completare.
+- La build `0.2.2` è verificata con `gradlew build --offline` e con un server dedicato; il test gameplay lato client in un mondo reale è ancora da completare.
 - Gli effetti dello scanner e del Sandevistan sono overlay 2D e particelle, non shader o post-processing.
 - Le texture sono pixel art segnaposto, non definitive.
 - Il Banco Impianti usa la schermata di crafting vanilla con una validazione dedicata del blocco.

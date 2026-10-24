@@ -3,7 +3,9 @@ package com.cybercraft.client;
 import com.cybercraft.cyberware.Cyberware;
 import com.cybercraft.cyberware.CyberwareData;
 import com.cybercraft.netrunning.Quickhack;
+import com.cybercraft.util.Targeting;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import net.minecraft.client.Camera;
@@ -14,10 +16,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -37,8 +47,6 @@ public final class ScannerHud {
     private static final int WHITE = 0xFFE8F6FA;
     private static final int DIM = 0xFF6E8994;
 
-    private static final double RANGE = 24.0;
-
     private ScannerHud() {}
 
     public static void render(GuiGraphics gui, DeltaTracker tickCounter) {
@@ -54,19 +62,26 @@ public final class ScannerHud {
         drawFilter(gui, w, h);
 
         LivingEntity target = currentTarget(client);
-        if (target != null) {
-            ScannerState.onTarget(target.getUUID());
-        } else {
-            ScannerState.onTarget(null);
-        }
+        ScannerState.onTarget(target);
 
         CyberwareData data = ClientCyberwareState.get();
         drawRam(gui, client, data);
         drawReticle(gui, w, h, target);
         if (target != null) {
             drawQuickhacks(gui, client, w, h, data);
-            drawTargetPanel(gui, client, w, h, target);
             drawUploadAboveTarget(gui, client, w, h, target);
+        }
+
+        LivingEntity panelTarget = target != null ? target : ScannerState.fadingTarget(client);
+        if (panelTarget != null) {
+            float alpha = ScannerState.fadeAlpha();
+            if (alpha < 1.0f) {
+                gui.setColor(1.0f, 1.0f, 1.0f, alpha);
+            }
+            drawTargetPanel(gui, client, w, h, panelTarget);
+            if (alpha < 1.0f) {
+                gui.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+            }
         }
         drawHints(gui, client, w, h);
         drawDamageGlitch(gui, client, w, h);
@@ -98,12 +113,17 @@ public final class ScannerHud {
     }
 
     public static LivingEntity currentTarget(Minecraft client) {
-        Entity entity = client.crosshairPickEntity;
-        if (!(entity instanceof LivingEntity living) || living == client.player
-                || !living.isAlive() || living.isSpectator()) {
+        if (client.player == null || client.level == null) {
             return null;
         }
-        if (client.player == null || client.player.distanceTo(living) > RANGE) {
+        double range = Targeting.rangeForRenderDistance(client.options.renderDistance().get());
+        Vec3 eye = client.player.getEyePosition(1.0f);
+        Vec3 look = client.player.getViewVector(1.0f);
+        Vec3 end = eye.add(look.scale(range));
+        AABB search = new AABB(eye, end).inflate(1.0);
+        EntityHitResult hit = ProjectileUtil.getEntityHitResult(client.player, eye, end, search,
+                entity -> Targeting.isValidTarget(entity, client.player), range * range);
+        if (hit == null || !(hit.getEntity() instanceof LivingEntity living)) {
             return null;
         }
         if (!client.player.hasLineOfSight(living)) {
@@ -312,12 +332,12 @@ public final class ScannerHud {
         long elapsed = now - ScannerState.targetChangedAt;
         int offset = (int) ((1.0 - Math.min(1.0, elapsed / 200.0)) * 26.0);
         int x = w / 2 + 40 + offset;
-        int y = h / 2 - 84;
-        int panelW = 204;
-        int panelH = 180;
+        int y = h / 2 - 104;
+        int panelW = 212;
+        int panelH = 208;
 
         boolean tech = isTech(target);
-        boolean hostile = target instanceof Enemy;
+        boolean hostile = isHostile(target);
         int border = tech ? AMBER : hostile ? RED : CYAN;
 
         gui.fill(x, y, x + panelW, y + panelH, 0xC7081118);
@@ -329,10 +349,10 @@ public final class ScannerHud {
 
         String name = target.getDisplayName().getString().toUpperCase(Locale.ROOT);
         gui.drawString(font, truncate(client, name, panelW - 16), x + 8, y + 8, border, false);
-        gui.drawString(font, Component.translatable("hud.cybercraft.scan.threat").getString() + ": "
-                        + Component.translatable(hostile ? "hud.cybercraft.scan.threat.high"
-                        : tech ? "hud.cybercraft.scan.threat.tech" : "hud.cybercraft.scan.threat.low").getString(),
-                x + 8, y + 20, hostile ? RED : DIM, false);
+
+        String type = Component.translatable("hud.cybercraft.scan.type").getString() + ": "
+                + target.getType().getDescription().getString().toUpperCase(Locale.ROOT);
+        gui.drawString(font, truncate(client, type, panelW - 16), x + 8, y + 20, DIM, false);
 
         int barX = x + 8;
         int barY = y + 33;
@@ -349,12 +369,40 @@ public final class ScannerHud {
             }
         }
         gui.drawString(font, String.format(Locale.ROOT, "HP %d / %d", Math.round(target.getHealth()),
-                Math.round(target.getMaxHealth())), barX, barY + 10, DIM, false);
+                Math.round(target.getMaxHealth())), barX, y + 43, DIM, false);
+
+        int armor = target.getArmorValue();
+        int toughness = (int) Math.round(target.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
+        gui.drawString(font, "ARMOR " + armor + "    TOUGHNESS " + toughness,
+                x + 8, y + 55, 0xFF9FBEC7, false);
+
+        String faction = Component.translatable(factionKey(target)).getString();
+        gui.drawString(font, Component.translatable("hud.cybercraft.scan.faction").getString()
+                + ": " + faction, x + 8, y + 67, factionColor(target), false);
+
+        gui.drawString(font, Component.translatable("hud.cybercraft.scan.status").getString(),
+                x + 8, y + 80, 0xFF9FBEC7, false);
+        List<MobEffectInstance> effects = new ArrayList<>(target.getActiveEffects());
+        effects.sort(Comparator.comparingInt(MobEffectInstance::getDuration).reversed());
+        if (effects.isEmpty()) {
+            gui.drawString(font, Component.translatable("hud.cybercraft.scan.status.none").getString(),
+                    x + 8, y + 91, DIM, false);
+        } else {
+            for (int i = 0; i < Math.min(4, effects.size()); i++) {
+                MobEffectInstance effect = effects.get(i);
+                String effectName = effect.getEffect().value().getDisplayName().getString().toUpperCase(Locale.ROOT);
+                String duration = effect.isInfiniteDuration() ? "INF" : (effect.getDuration() / 20) + "s";
+                String line = truncate(client, effectName + " " + romanAmplifier(effect.getAmplifier())
+                        + "  " + duration, panelW - 30);
+                gui.drawString(font, line, x + 8, y + 91 + i * 11,
+                        effect.getEffect().value().isBeneficial() ? LIME : RED, false);
+            }
+        }
 
         gui.drawString(font, Component.translatable("hud.cybercraft.scan.vulnerabilities").getString(),
-                x + 8, y + 28 + 22, 0xFF9FBEC7, false);
+                x + 8, y + 145, 0xFF9FBEC7, false);
         List<String[]> vulns = vulnerabilities(target);
-        int vy = y + 28 + 33;
+        int vy = y + 156;
         for (String[] vuln : vulns) {
             gui.fill(x + 8, vy + 2, x + 13, vy + 7, vuln[2].equals("red") ? RED
                     : vuln[2].equals("amber") ? AMBER : CYAN);
@@ -362,20 +410,61 @@ public final class ScannerHud {
             vy += 11;
         }
 
-        int lineY = y + 120;
-        gui.drawString(font, Component.translatable("hud.cybercraft.scan.archetype").getString() + ": "
-                + (hostile ? Component.translatable("hud.cybercraft.scan.archetype.hostile").getString()
-                : Component.translatable("hud.cybercraft.scan.archetype.neutral").getString()),
-                x + 8, lineY, DIM, false);
-        gui.drawString(font, Component.translatable("hud.cybercraft.scan.ability").getString() + ": "
-                + ability(target), x + 8, lineY + 11, 0xFFB9D7DE, false);
-        String lore = hostile
-                ? Component.translatable("hud.cybercraft.scan.lore.hostile").getString()
-                : Component.translatable("hud.cybercraft.scan.lore.neutral").getString();
-        gui.drawString(font, truncate(client, lore, panelW - 16), x + 8, lineY + 23, 0xFF6F8B95, false);
-
         drawUploadBar(gui, x + 8, y + panelH - 13, panelW - 16);
         drawCompile(gui, client, x, y, panelW, panelH, elapsed);
+    }
+
+    private static boolean isHostile(Entity entity) {
+        return entity instanceof Enemy
+                || entity instanceof NeutralMob neutral && neutral.isAngry();
+    }
+
+    private static String factionKey(Entity entity) {
+        if (entity instanceof Player) {
+            return "hud.cybercraft.scan.faction.player";
+        }
+        if (isTech(entity)) {
+            return "hud.cybercraft.scan.faction.tech";
+        }
+        if (isHostile(entity)) {
+            return "hud.cybercraft.scan.faction.hostile";
+        }
+        if (entity instanceof AbstractVillager) {
+            return "hud.cybercraft.scan.faction.civilian";
+        }
+        return "hud.cybercraft.scan.faction.passive";
+    }
+
+    private static int factionColor(Entity entity) {
+        if (entity instanceof Player) {
+            return CYAN;
+        }
+        if (isTech(entity)) {
+            return AMBER;
+        }
+        if (isHostile(entity)) {
+            return RED;
+        }
+        if (entity instanceof AbstractVillager) {
+            return LIME;
+        }
+        return CYAN;
+    }
+
+    private static String romanAmplifier(int amplifier) {
+        return switch (amplifier) {
+            case 0 -> "I";
+            case 1 -> "II";
+            case 2 -> "III";
+            case 3 -> "IV";
+            case 4 -> "V";
+            case 5 -> "VI";
+            case 6 -> "VII";
+            case 7 -> "VIII";
+            case 8 -> "IX";
+            case 9 -> "X";
+            default -> "+" + (amplifier + 1);
+        };
     }
 
     private static List<String[]> vulnerabilities(LivingEntity target) {
@@ -401,31 +490,6 @@ public final class ScannerHud {
         }
         list.add(new String[]{"CHIMICO", "+5%", "cyan"});
         return list;
-    }
-
-    private static String ability(LivingEntity target) {
-        if (target.getType() == EntityType.CREEPER) {
-            return "Esplosivo";
-        }
-        if (target.getType() == EntityType.ENDERMAN) {
-            return "Teletrasporto";
-        }
-        if (target.getType() == EntityType.SKELETON || target.getType() == EntityType.STRAY) {
-            return "Tiro a distanza";
-        }
-        if (target.getType() == EntityType.SPIDER || target.getType() == EntityType.CAVE_SPIDER) {
-            return "Ragnatele / arrampicata";
-        }
-        if (target.getType() == EntityType.WITCH) {
-            return "Supporto / pozioni";
-        }
-        if (target.getType() == EntityType.BLAZE) {
-            return "Attacco infuocato";
-        }
-        if (target.getType() == EntityType.IRON_GOLEM) {
-            return "Corazza pesante";
-        }
-        return Component.translatable("hud.cybercraft.scan.ability.none").getString();
     }
 
     private static void drawCompile(GuiGraphics gui, Minecraft client, int x, int y, int w, int h, long elapsed) {
@@ -521,7 +585,8 @@ public final class ScannerHud {
         var font = client.font;
         String execute = "[" + CyberCraftClient.EXECUTE_HACK_KEY.getTranslatedKeyMessage().getString() + "] "
                 + Component.translatable("hud.cybercraft.scan.hint.execute").getString();
-        String navigate = "[" + Component.translatable("hud.cybercraft.scan.hint.wheel").getString() + "] "
+        String navigate = "[" + CyberCraftClient.HACK_PREV_KEY.getTranslatedKeyMessage().getString()
+                + "/" + CyberCraftClient.HACK_NEXT_KEY.getTranslatedKeyMessage().getString() + "] "
                 + Component.translatable("hud.cybercraft.scan.hint.navigate").getString();
         String exit = "[" + CyberCraftClient.SCANNER_KEY.getTranslatedKeyMessage().getString() + "] "
                 + Component.translatable("hud.cybercraft.scan.hint.exit").getString();

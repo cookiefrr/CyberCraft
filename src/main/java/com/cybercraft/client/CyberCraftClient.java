@@ -19,7 +19,6 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWScrollCallbackI;
 
 /**
  * Entry point client: keybind rimappabili, cache dello stato cyberware,
@@ -34,9 +33,6 @@ public final class CyberCraftClient implements ClientModInitializer {
     public static final KeyMapping EXECUTE_HACK_KEY = key("key.cybercraft.execute_hack", GLFW.GLFW_KEY_G);
     public static final KeyMapping HACK_PREV_KEY = key("key.cybercraft.hack_prev", GLFW.GLFW_KEY_X);
     public static final KeyMapping HACK_NEXT_KEY = key("key.cybercraft.hack_next", GLFW.GLFW_KEY_Z);
-
-    private static boolean scrollHooked;
-    private static GLFWScrollCallbackI previousScroll;
 
     private static KeyMapping key(String translationKey, int defaultKey) {
         return new KeyMapping(translationKey, InputConstants.Type.KEYSYM, defaultKey, "category.cybercraft");
@@ -67,7 +63,10 @@ public final class CyberCraftClient implements ClientModInitializer {
                     }
                 }));
 
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ScannerState.close());
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+            EntityOutlineManager.reset();
+            ScannerState.close();
+        });
 
         HudRenderCallback.EVENT.register(SandevistanFx::renderHud);
         HudRenderCallback.EVENT.register(ScannerHud::render);
@@ -81,7 +80,7 @@ public final class CyberCraftClient implements ClientModInitializer {
             return;
         }
         SandevistanFx.tick(client);
-        installScrollHook(client);
+        EntityOutlineManager.tick(client);
         if (client.player.isDeadOrDying()) {
             ScannerState.close();
         }
@@ -127,7 +126,7 @@ public final class CyberCraftClient implements ClientModInitializer {
             if (target == null) {
                 continue;
             }
-            ClientPlayNetworking.send(new CastHackPayload(ClientCyberwareState.get().selectedHack()));
+            ClientPlayNetworking.send(new CastHackPayload(ClientCyberwareState.get().selectedHack(), target.getId()));
             ScannerState.beginUpload();
         }
     }
@@ -139,34 +138,5 @@ public final class CyberCraftClient implements ClientModInitializer {
         while (EXECUTE_HACK_KEY.consumeClick()) { }
         while (HACK_PREV_KEY.consumeClick()) { }
         while (HACK_NEXT_KEY.consumeClick()) { }
-    }
-
-    /**
-     * GLFW non espone un evento rotella a Fabric: incateniamo il callback
-     * vanilla e lo inoltriamo quando lo scanner non deve intercettarlo.
-     */
-    private static void installScrollHook(Minecraft client) {
-        if (scrollHooked) {
-            return;
-        }
-        long handle = client.getWindow().getWindow();
-        if (handle == 0L) {
-            return;
-        }
-        previousScroll = GLFW.glfwSetScrollCallback(handle, CyberCraftClient::onScroll);
-        scrollHooked = true;
-    }
-
-    private static void onScroll(long window, double xOffset, double yOffset) {
-        Minecraft client = Minecraft.getInstance();
-        if (ScannerState.active && client.screen == null && yOffset != 0.0) {
-            int delta = yOffset > 0.0 ? -1 : 1;
-            ClientCyberwareState.cycleHack(delta);
-            ClientPlayNetworking.send(new SelectHackPayload(delta));
-            return;
-        }
-        if (previousScroll != null) {
-            previousScroll.invoke(window, xOffset, yOffset);
-        }
     }
 }

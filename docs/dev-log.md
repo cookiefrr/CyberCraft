@@ -2,6 +2,31 @@
 
 Registro cronologico degli interventi. Ogni voce indica data, obiettivo, modifiche e verifiche. Va aggiornato a ogni lavoro sul progetto.
 
+## 2026-10-24 — Quickhack targeting 0.2.2
+
+**Obiettivo**
+- Rimuovere l'intercettazione della rotella nello scanner.
+- Agganciare qualsiasi entità vivente in linea di vista entro la render distance (max 64).
+- Evidenziare in rosso i bersagli visibili e mostrare una scheda statistiche sotto il mirino con dissolvenza.
+
+**Modifiche**
+- `CyberCraftClient`: rimossi hook GLFW della rotella e relativi campi; il cast invia `CastHackPayload(hack, entityId)`; reset outline e scanner alla disconnessione.
+- `ScannerHud`: rimosso `crosshairPickEntity`, aggiunto raycast `ProjectileUtil` con portata dinamica; scheda statistiche ridisegnata (tipo, fazione, HP, armatura/robustezza, effetti, vulnerabilità); fade con alpha; hint X/Z.
+- `ScannerState`: bersaglio con timestamp, dissolvenza 120 ms e cache dell'ultimo target.
+- `EntityOutlineManager` (nuovo): team client rosso, glow sulle entità visibili, filtro distanza/FOV/LOS, max 48, aggiornamento ogni 5 tick, ripristino alla chiusura.
+- `Targeting` (nuovo): portata e validità condivise.
+- `CastHackPayload` e `NetrunnerManager`: id bersaglio e validazione server esplicita (esistenza, tipo, distanza, LOS, raycast).
+- Lang EN/IT: rimosso hint rotella, aggiunte chiavi fazione/tipo/stati.
+- Documentazione: `docs/quickhack-targeting.md`, README, gameplay, architecture, changelog, roadmap.
+
+**Verifiche**
+- `gradlew build --offline` → `BUILD SUCCESSFUL`; jar `cybercraft-0.2.2.jar` 238.223 byte.
+- Server dedicato: `cybercraft 0.2.2`, `Done (0.590s)`, nessun errore.
+- Test grafico lato client non eseguito in questa sessione: hotbar, colore outline su entità non giocatore, fade e cast a distanza restano da verificare in un mondo reale.
+
+**Stato**
+- Versione `0.2.2` su branch `indev`; in attesa di test gameplay prima dell'integrazione in `main`.
+
 ## 2026-10-24 — Creazione repository e documentazione pubblica
 
 **Obiettivo**
